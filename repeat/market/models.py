@@ -34,13 +34,13 @@ class Store(models.Model):
 
 class Category(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    category_name = models.CharField(max_length=30)
-    category_image = models.ImageField(upload_to = 'uploads',null = True)
-    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    categoryname = models.CharField(max_length=30)
+    categoryimage = models.ImageField(upload_to = 'uploads',null = True)
+    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 
 
     def __str__(self):
-        return self.category_name
+        return self.categoryname
 
     class Meta:
         verbose_name = "Category"
@@ -79,13 +79,13 @@ class Category(models.Model):
 class Subcategory(models.Model):
     store  = models.ForeignKey(Store, on_delete=models.CASCADE)
     category  = models.ForeignKey(Category, on_delete=models.CASCADE)
-    subcategory_name  = models.CharField(max_length=30)
-    subcategory_image  = models.ImageField(upload_to = 'uploads',null = True) 
-    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    subcategoryname  = models.CharField(max_length=30)
+    subcategoryimage  = models.ImageField(upload_to = 'uploads',null = True) 
+    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 
 
     def __str__(self):
-        return self.subcategory_name
+        return self.subcategoryname
 
     class Meta:
         verbose_name = "Subcategory"
@@ -128,17 +128,17 @@ class Subcategory(models.Model):
 class Product(models.Model):
     store   = models.ForeignKey(Store, on_delete=models.CASCADE)
     subcategory  = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
-    product_name  = models.CharField(max_length=30)
-    product_quantity  = models.IntegerField()
-    product_price  = models.FloatField()
-    product_discount_price = models.FloatField()
-    product_description  = models.TextField(max_length=801)
-    product_image  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
-    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    productname  = models.CharField(max_length=30)
+    productquantity  = models.IntegerField()
+    productprice  = models.FloatField()
+    productdiscountprice = models.FloatField()
+    productdescription  = models.TextField(max_length=801)
+    productimage  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
+    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 
     
     def __str__(self):
-        return self.product_name
+        return self.productname
  
     #    class instance method 
 
