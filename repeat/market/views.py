@@ -482,3 +482,131 @@ def deleteproduct(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def createuser(request):
+    params = json.loads(request.body)
+
+    username = params.get('username')
+    password = params.get('password')
+    firstname = params.get('firstname')
+    lastname = params.get('lastname')
+    age = params.get('age')
+    email = params.get('email')
+
+    try:
+        if validstring(username):return JsonResponse({'validation':'enter valid username ,must be a string'})   
+        elif validstring(password):return JsonResponse({'validation':'enter valid password,must be a string'})  
+        elif validstring(firstname):return JsonResponse({'validation':'enter valid first_name,must be a string'})   
+        elif validstring(lastname):return JsonResponse({'validation':'enter valid last_name,must be a string'})    
+        elif validinteger(age):return JsonResponse({'validation':'enter valid age,must be a integer'})
+        elif validemail(email):return JsonResponse({'validation':'enter valid email,must be a string'})   
+        
+        with transaction.atomic():
+            userobj =get_user_model().objects.create(
+                username = username
+            )
+            userobj.set_password(password)
+            userobj.save()
+
+            userprofileobj = Userprofile.objects.create(
+                user = userobj,
+                firstname = firstname,
+                lastname = lastname,
+                age = age,
+                email = email
+            )
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def updateuser(request):
+    params = json.loads(request.body)
+
+    userid = params.get('userid')
+    username = params.get('username')
+    password = params.get('password')
+    firstname = params.get('firstname')
+    lastname = params.get('lastname')
+    age = params.get('age')
+    email = params.get('email')
+
+    try:
+        if validstring(username):return JsonResponse({'validation':'enter valid username ,must be a string'})   
+        elif validstring(password):return JsonResponse({'validation':'enter valid password,must be a string'})  
+        elif validstring(firstname):return JsonResponse({'validation':'enter valid first_name,must be a string'})   
+        elif validstring(lastname):return JsonResponse({'validation':'enter valid last_name,must be a string'})    
+        elif validinteger(age):return JsonResponse({'validation':'enter valid age,must be a integer'})
+        elif validemail(email):return JsonResponse({'validation':'enter valid email,must be a string'})   
+        
+        with transaction.atomic():
+            obj = Userprofile.objects.get(id = userid)
+            obj.user.username = username
+            obj.user.password = password
+            obj.firstname = firstname
+            obj.lastname = lastname
+            obj.age = age
+            obj.email = email
+            obj.save()
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getuser(request):
+    params = json.loads(request.body)
+    resposne = []
+
+    userid = params.get('userid')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})
+        
+        obj = Userprofile.objects.get(id = userid)
+        resposne.append({
+            'userid':obj.id,
+            'usernsme':obj.user.username,
+            'firstname':obj.firstname,
+            'lastname':obj.lastname,
+            'age':obj.age,
+            "email":obj.email,
+            'createdon':obj.createdon
+        })
+        return JsonResponse({'validation':'success','resposne':resposne,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getalluser(request):
+    resposne = []
+
+    try:
+        
+        obj = Userprofile.objects.all()
+        for users in obj:
+            resposne.append({
+                'userid':users.id,
+                'usernsme':users.user.username,
+                'firstname':users.firstname,
+                'lastname':users.lastname,
+                "email":users.email,
+            })
+        return JsonResponse({'validation':'success','resposne':resposne,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def deleteuser(request):
+    params = json.loads(request.body)
+    resposne = []
+
+    userid = params.get('userid')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})
+        
+        obj = Userprofile.objects.get(id = userid).delete()
+        return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
