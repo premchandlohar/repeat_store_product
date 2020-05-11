@@ -610,3 +610,288 @@ def deleteuser(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def createaddress(request):
+    params = json.loads(request.body)
+
+    userid = params.get('userid') 
+    buildingname = params.get('buildingname')
+    streetname = params.get('streetname')
+    locality = params.get('locality')
+    city = params.get('city')
+    district = params.get('district')   
+    state = params.get('state')
+    pincode = params.get('pincode')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+        elif validstring(buildingname):return JsonResponse({'validation':'enter valid buildingname,must be a string'})    
+        elif validstring(streetname):return JsonResponse({'validation':'enter valid streetname,must be a string'})    
+        elif validstring(locality):return JsonResponse({'validation':'enter valid locality,must be a string'})    
+        elif validstring(city):return JsonResponse({'validation':'enter valid city,must be a string'})    
+        elif validstring(district):return JsonResponse({'validation':'enter valid district,must be a string'})    
+        elif validstring(state):return JsonResponse({'validation':'enter valid state,must be a string'})    
+        elif validpincode(pincode):return JsonResponse({'validation':'enter valid pincode,must be a integer and only 6 digit required'})    
+     
+        with transaction.atomic():
+            userobj = Userprofile.objects.get(id = userid)
+            createaddressobj = Address.objects.create(
+                userprofile = userobj,
+                buildingname = buildingname,
+                streetname = streetname,
+                locality = locality,
+                city = city,
+                district = district,
+                state = state,
+                pincode = pincode
+            )
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def updateaddress(request):
+    params = json.loads(request.body)
+
+    addressid = params.get('addressid')
+    buildingname = params.get('buildingname')
+    streetname = params.get('streetname')
+    locality = params.get('locality')
+    city = params.get('city')
+    district = params.get('district')
+    state = params.get('state')
+    pincode = params.get('pincode')
+
+    try:
+        if validinteger(addressid):return JsonResponse({'validation':'enter valid addressid,must be a integer'})  
+        elif validstring(buildingname):return JsonResponse({'validation':'enter valid buildingname,must be a string'})    
+        elif validstring(streetname):return JsonResponse({'validation':'enter valid streetname,must be a string'})    
+        elif validstring(locality):return JsonResponse({'validation':'enter valid locality,must be a string'})    
+        elif validstring(city):return JsonResponse({'validation':'enter valid city,must be a string'})    
+        elif validstring(district):return JsonResponse({'validation':'enter valid district,must be a string'})    
+        elif validstring(state):return JsonResponse({'validation':'enter valid state,must be a string'})    
+        elif validpincode(pincode):return JsonResponse({'validation':'enter valid pincode,must be a integer and only 6 digit required'})    
+     
+        with transaction.atomic():
+            obj = Address.objects.get(id = addressid)
+            obj.buildingname = buildingname
+            obj.streetname = streetname
+            obj.locality = locality
+            obj.city = city
+            obj.district = district
+            obj.state = state
+            obj.pincode = pincode
+            obj.save()
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getaddress(request):
+    params = json.loads(request.body)
+    response =[]
+
+    addressid = params.get('addressid')
+
+    try:
+        if validinteger(addressid):return JsonResponse({'validation':'enter valid addressid,must be a integer'})  
+
+        obj = Address.objects.get(id = addressid)
+        response.append({
+            'addressid':obj.id,
+            'buildingname':obj.buildingname,
+            'streetname':obj.streetname,
+            'locality':obj.locality,
+            'city':obj.city,
+            'district':obj.district,
+            'state':obj.state,
+            'pincode':obj.pincode
+        })
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getalladdress(request):
+    response =[]
+
+    try:  
+        obj = Address.objects.all()
+        for address in obj:
+            response.append({
+                'addressid':address.id,
+                'userid':address.userprofile.id,
+                'buildingname':address.buildingname,
+                'streetname':address.streetname,
+                'locality':address.locality,
+                'city':address.city,
+                'district':address.district,
+            })
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def deleteaddress(request):
+    params = json.loads(request.body)
+
+    addressid = params.get('addressid')
+
+    try:
+        if validinteger(addressid):return JsonResponse({'validation':'enter valid addressid,must be a integer'})  
+
+        obj = Address.objects.get(id = addressid).delete()
+        return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getaddressesbyuserid(request):
+    params = json.loads(request.body)
+    response = []
+
+    userid = params.get('userid')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+
+        userobj = Userprofile.objects.get(id=userid)
+        for address in userobj.addresses.all():
+            response.append({
+                'userid':address.userprofile.id,
+                'username':address.userprofile.user.username,
+                'addressid':address.id,
+                'buildingname':address.buildingname,
+                'streetname':address.streetname,
+                'locality':address.locality,
+                'city':address.city,
+                'district':address.district,
+                'state':address.state,
+                'pincode':address.pincode
+            })
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def addfollowership(request):
+    params = json.loads(request.body)
+
+    userid = params.get('userid')
+    storeid = params.get('storeid')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+        elif validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
+
+        with transaction.atomic():
+            userobj = Userprofile.objects.get(id = userid)
+            storeobj = Store.objects.get(id = storeid)
+
+            createfollowershipobj = Followership.objects.create(
+                store = storeobj,
+                user = userobj
+            )
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def updatefollowership(request):
+    params = json.loads(request.body)
+    
+    followershipid = params.get('followershipid')
+    storeid = params.get('storeid')
+    userid = params.get('userid')
+    try:
+        if validinteger(followershipid):return JsonResponse({'validation':'enter valid followershipid,must be a integer'})  
+        elif validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
+        elif validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+
+        with transaction.atomic():
+            userobj = Userprofile.objects.get(id = userid)
+            storeobj = Store.objects.get(id = storeid)
+
+            obj = Followership.objects.get(id = followershipid)
+            obj.store = storeobj
+            obj.user = userobj
+            obj.save()
+            return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getfollowersbystore(request):
+    params = json.loads(request.body)
+    response = []
+
+    storeid = params.get('storeid')
+
+    try:
+        if validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
+
+        storeobj = Store.objects.get(id = storeid)
+        followerobj = storeobj.follower.all()
+        for users in followerobj:
+            response.append({
+                'userid':users.user.id,
+                'firstname':users.user.firstname
+            })
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getstoresbyfollower(request):
+    params = json.loads(request.body)
+    response = []
+
+    userid = params.get('userid')
+
+    try:
+        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+
+        userobj =Userprofile.objects.get(id = userid)
+        followingobj = userobj.following.all()
+        for stores in followingobj:
+            response.append({
+                'storeid':stores.store.id,
+                'storename':stores.store.storename
+            })
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def removeuserbysomereason(request):
+    params = json.loads(request.body)
+     
+    followershipid = params.get('followershipid')
+    reason = params.get('reason')
+
+    try:
+        if validinteger(followershipid):return JsonResponse({'validation':'enter valid followershipid,must be a integer'})  
+        elif validinteger(reason):return JsonResponse({'validation':'enter valid reason,must be a integer'})  
+
+        followerobj = Followership.objects.get(id = followershipid)
+        followerobj.user = None
+        followerobj.reason = reason
+        followerobj.save()
+        return JsonResponse({'validation':'success','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def getallfollowerships(request):
+    response = []
+
+    try:
+        followerobj = Followership.objects.all()
+
+        for followers in followerobj:
+            response.append(followers.getjson())
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

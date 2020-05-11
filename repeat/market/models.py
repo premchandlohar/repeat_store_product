@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth import get_user_model
+# from market.models import Userprofile
 
 
 
@@ -15,6 +16,7 @@ class Store(models.Model):
     storestate = models.CharField(max_length=25)
     createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     storeimage = models.ImageField(upload_to ='uploads/%Y/%m/%d/',null = True,blank= True)
+    # follower = models.ManyToManyField(Userprofile, through = 'Followership',related_name='followers')
 
     def __str__(self):
         return self.storename
@@ -33,7 +35,6 @@ class Store(models.Model):
     #         'created_on':str(self.created_on),
         
     # *******************************************************************************************
-
 class Category(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     categoryname = models.CharField(max_length=30)
@@ -248,8 +249,8 @@ class Followership(models.Model):
         (3,'not liked'),
         (4,'other')
     )
-    store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    user = models.ForeignKey(Userprofile, on_delete=models.CASCADE,null=True,blank=True)
+    store = models.ForeignKey(Store, on_delete=models.CASCADE,related_name='follower')
+    user = models.ForeignKey(Userprofile, on_delete=models.CASCADE,null=True,blank=True,related_name='following')
     reason = models.IntegerField( choices=REASONCHOICES,null=True,blank=True)
     
      
@@ -274,9 +275,11 @@ class Followership(models.Model):
              
     def __str__(self):
         if self.user == None:
-            return self.store.storename
+            return self.store.storename+'- unfollow'
         else:
-            return self.user.firstname + ' ' + self.store.storename
+            return self.store.storename+ ' ' 'followers'+'-'+self.user.firstname
+            # return self.user.firstname + ' '+ self.store.storename
+
         
     # ***********************************************************************************************
 

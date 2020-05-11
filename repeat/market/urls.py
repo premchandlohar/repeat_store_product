@@ -27,6 +27,18 @@ urlpatterns = [
      path('getuser/', views.getuser),
      path('getalluser/', views.getalluser),
      path('deleteuser/', views.deleteuser),
+     path('createaddress/', views.createaddress),
+     path('updateaddress/', views.updateaddress),
+     path('getaddress/', views.getaddress),
+     path('getalladdress/', views.getalladdress),
+     path('deleteaddress/', views.deleteaddress),
+     path('getaddressesbyuserid/', views.getaddressesbyuserid),
+     path('addfollowership/', views.addfollowership),
+     path('updatefollowership/', views.updatefollowership),
+     path('getfollowersbystore/', views.getfollowersbystore),
+     path('getstoresbyfollower/', views.getstoresbyfollower),
+     path('removeuserbysomereason/', views.removeuserbysomereason),
+     path('getallfollowerships/', views.getallfollowerships),
 
 
 ]
