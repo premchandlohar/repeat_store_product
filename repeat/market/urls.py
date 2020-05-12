@@ -1,5 +1,7 @@
 from django.urls import path
 from market import views
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
      path('createstore/', views.createstore),
@@ -39,6 +41,8 @@ urlpatterns = [
      path('getstoresbyfollower/', views.getstoresbyfollower),
      path('removeuserbysomereason/', views.removeuserbysomereason),
      path('getallfollowerships/', views.getallfollowerships),
+     path('userlogin/', views.userlogin),
+     path('accounts/login/', auth_views.LoginView.as_view()),
 
 
 ]

@@ -4,8 +4,10 @@ from .models import *
 import json
 from django.db import transaction
 from validator import *
-
+from django.contrib.auth import authenticate, login
 # Create your views here.
+from django.contrib.auth.decorators import login_required
+
 def createstore(request):
     params = request.POST
     try:
@@ -894,4 +896,27 @@ def getallfollowerships(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
+@login_required(login_url='/accounts/login/')
+def userlogin(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    try:
+        if validstring(username):return JsonResponse({'validation':'enter valid username ,must be a string'})   
+        elif validstring(password):return JsonResponse({'validation':'enter valid password,must be a string'})  
+        
+        with transaction.atomic():
+                
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                # return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+                return JsonResponse({'validation':'success','status':True})
+            else:
+                return JsonResponse({'validation':str(e),'status':False})
+
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
