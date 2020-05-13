@@ -301,7 +301,7 @@ def getaddressesbyuserid(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-@login_required(login_url='/accounts/login/')
+# @login_required(login_url='/accounts/login/')
 def userlogin(request):
     username = request.POST['username']
     password = request.POST['password']
@@ -322,6 +322,44 @@ def userlogin(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def changeuserpassword(request):
+    params = request.POST
+
+    username = params.get('username') 
+    oldpassword = params.get('oldpassword')
+    newpassword = params.get('newpassword')
+    confirmnewpassword = params.get('confirmnewpassword')
+
+    try:
+        if validstring(username):return JsonResponse({'validation':'enter valid username ,must be a string'})   
+        elif validstring(oldpassword):return JsonResponse({'validation':'enter valid oldpassword,must be a string'})  
+        elif validstring(newpassword):return JsonResponse({'validation':'enter valid newpassword,must be a string'})  
+        elif validstring(confirmnewpassword):return JsonResponse({'validation':'enter valid confirmnewpassword,must be a string'})  
+        
+        user =  get_user_model().objects.filter(username = username).exists()
+        if not user:
+            return JsonResponse({'response':'not a user','status':user})
+
+        user =  get_user_model().objects.get(username = username)
+        check_password = user.check_password(oldpassword) 
+
+        if not check_password:
+            return JsonResponse({'response':'wrong password','status':check_password})
+        if not (newpassword == confirmnewpassword):
+            return JsonResponse({'response':('missmatch password',newpassword,confirmnewpassword),'status':False})
+
+        user.set_password(newpassword)
+        user.save()
+
+        return JsonResponse({'response':'successfuly change password','status':True})
+    except Exception as e:
+            return JsonResponse({'response':str(e),'status':False})
+            #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+       
 
 
 

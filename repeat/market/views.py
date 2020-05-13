@@ -603,3 +603,20 @@ def getallfollowerships(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         
+# try:
+#         subject = 'Latest Trending Product in our Store'
+#         details_dict = {"Product Name" : data["product_name"], "Product Price" : data["product_price"], 
+#         "Product Discount Price" : data["product_discount_price"], 
+#         "Product Description" : data["product_description"]}
+#         recipient = []
+#         follow_data = []
+#         followers, status, message = get_follower_by_stores_function(data)
+#         all_user = UserProfile.objects.all()
+#         for obj in followers:
+#             follow_data.append(all_user.get(id = obj["id"]))
+#         for obj in follow_data:
+#             recipient.append(obj.email)
+#         send_mail(subject, str(details_dict), EMAIL_HOST_USER, recipient, fail_silently= False)
+#         return True, "Email send successfully"
+#     except Exception as e:
+#         return False, str(e)

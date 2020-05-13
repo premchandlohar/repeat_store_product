@@ -16,6 +16,9 @@ urlpatterns = [
     path('deleteaddress/', views.deleteaddress),
     path('getaddressesbyuserid/', views.getaddressesbyuserid),
     path('userlogin/', views.userlogin),
+    path('changeuserpassword/', views.changeuserpassword),
+
+
     # path('accounts/login/', auth_views.LoginView.as_view()),
 
 ]
