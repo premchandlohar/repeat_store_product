@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-from django.contrib.auth import get_user_model
+from customer.models import Userprofile
 # from market.models import Userprofile
 
 
@@ -138,8 +138,7 @@ class Product(models.Model):
     productdescription  = models.TextField(max_length=801)
     productimage  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
     createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
-
-    
+  
     def __str__(self):
         return self.productname
  
@@ -171,77 +170,6 @@ class Product(models.Model):
     #         'created_on':str(self.created_on),
     #     }
         # *****************************************************************************************
-
-
-class Userprofile(models.Model):
-
-    user = models.OneToOneField(get_user_model(),on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=30)
-    lastname = models.CharField(max_length=30)
-    age = models.PositiveSmallIntegerField()
-    email = models.EmailField(max_length=255,unique=False)
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
-    # following= models.ManyToManyField(Store, through = 'Followership',related_name='following',
-    # blank =True)
-
-    def __str__(self):
-        return self.firstname + " " + self.lastname
-
-    # def get_json(self):
-    #     return {
-    #         "username": self.user.username,
-    #         "first_name" : self.first_name,
-    #         "last_name" : self.last_name,
-    #         "age" : self.age,
-    #         "email" : self.email,
-    #         "created_on" :self.created_on
-    #     }
-
-    # def all_user(self):
-    #     return {
-    #         "user_id" : self.id,
-    #         "username": self.user.username,
-    #         "first_name" : self.first_name,
-    #         "last_name" : self.last_name,
-    #         "age" : self.age,
-    #         "email" : self.email,
-    #         "created_on" :self.created_on
-    #     }
-
-    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-class Address(models.Model):
-    userprofile = models.ForeignKey(Userprofile,on_delete=models.CASCADE,related_name='addresses')
-    buildingname =  models.CharField(max_length=30)
-    streetname =  models.CharField(max_length=30)
-    locality =  models.CharField(max_length=30)
-    city =  models.CharField(max_length=30)
-    district =  models.CharField(max_length=30)
-    state =  models.CharField(max_length=30)
-    pincode =  models.DecimalField(max_digits = 10,decimal_places = 4)
-
-    def __str__(self):
-        return self.userprofile.firstname +" "+ self.userprofile.lastname
-
-    class Meta:
-        verbose_name = "Address"
-        verbose_name_plural = "Addresses"
-
-    # def get_json(self):
-    #     return {
-    #         "user_id" : self.userprofile.id,
-    #         "first_name" : self.userprofile.first_name,
-    #         "last_name" : self.userprofile.last_name,
-    #         "building_name" : self.building_name,
-    #         "street_name" : self.street_name,
-    #         "locality" : self.locality,
-    #         "city" : self.city,
-    #         "district" : self.district,
-    #         "state" : self.state,
-    #         "pincode" : self.pincode
-    #     }
-
-        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 class Followership(models.Model):  
     REASONCHOICES = (
         (1,'not intrested'),
@@ -251,8 +179,7 @@ class Followership(models.Model):
     )
     store = models.ForeignKey(Store, on_delete=models.CASCADE,related_name='follower')
     user = models.ForeignKey(Userprofile, on_delete=models.CASCADE,null=True,blank=True,related_name='following')
-    reason = models.IntegerField( choices=REASONCHOICES,null=True,blank=True)
-    
+    reason = models.IntegerField( choices=REASONCHOICES,null=True,blank=True)  
      
     # def get_json(self):
     #     if self.user==None:
@@ -270,17 +197,13 @@ class Followership(models.Model):
             return self.store.storename+': unfollow'
         else:
             return self.store.storename + ': '  +self.user.firstname
-             
-             
-             
+                       
     def __str__(self):
         if self.user == None:
             return self.store.storename+'- unfollow'
         else:
             return self.store.storename+ ' ' 'followers'+'-'+self.user.firstname
-            # return self.user.firstname + ' '+ self.store.storename
-
-        
+            # return self.user.firstname + ' '+ self.store.storename      
     # ***********************************************************************************************
 
 
