@@ -18,6 +18,7 @@ def createuser(request):
     firstname = params.get('firstname')
     lastname = params.get('lastname')
     age = params.get('age')
+    mobilenumber = params.get('mobilenumber')
     email = params.get('email')
 
     try:
@@ -26,6 +27,7 @@ def createuser(request):
         elif validstring(firstname):return JsonResponse({'validation':'enter valid first_name,must be a string'})   
         elif validstring(lastname):return JsonResponse({'validation':'enter valid last_name,must be a string'})    
         elif validinteger(age):return JsonResponse({'validation':'enter valid age,must be a integer'})
+        elif validmobilenumber(mobilenumber):return JsonResponse({'validation':'enter valid mobilenumber ,must be a string and 10 digit'})   
         elif validemail(email):return JsonResponse({'validation':'enter valid email,must be a string'})   
         
         with transaction.atomic():
@@ -40,6 +42,7 @@ def createuser(request):
                 firstname = firstname,
                 lastname = lastname,
                 age = age,
+                mobilenumber = mobilenumber,
                 email = email
             )
             return JsonResponse({'validation':'success','status':True})
@@ -56,6 +59,8 @@ def updateuser(request):
     firstname = params.get('firstname')
     lastname = params.get('lastname')
     age = params.get('age')
+    mobilenumber = params.get('mobilenumber')
+    print(mobilenumber)
     email = params.get('email')
 
     try:
@@ -63,9 +68,9 @@ def updateuser(request):
         elif validstring(password):return JsonResponse({'validation':'enter valid password,must be a string'})  
         elif validstring(firstname):return JsonResponse({'validation':'enter valid first_name,must be a string'})   
         elif validstring(lastname):return JsonResponse({'validation':'enter valid last_name,must be a string'})    
-        elif validinteger(age):return JsonResponse({'validation':'enter valid age,must be a integer'})
-        elif validemail(email):return JsonResponse({'validation':'enter valid email,must be a string'})   
-        
+        elif validinteger(age):return JsonResponse({'validation':'enter valid age,must be a integer'}) 
+        elif validmobilenumber(mobilenumber):return JsonResponse({'validation':'enter valid mobilenumber ,must be a string and 10 digit'})   
+        elif validemail(email):return JsonResponse({'validation':'enter valid email,must be a string'})
         with transaction.atomic():
             obj = Userprofile.objects.get(id = userid)
             obj.user.username = username
@@ -73,6 +78,7 @@ def updateuser(request):
             obj.firstname = firstname
             obj.lastname = lastname
             obj.age = age
+            obj.mobilenumber = mobilenumber
             obj.email = email
             obj.save()
             return JsonResponse({'validation':'success','status':True})
@@ -96,6 +102,7 @@ def getuser(request):
             'firstname':obj.firstname,
             'lastname':obj.lastname,
             'age':obj.age,
+            'mobilenumber':obj.mobilenumber,
             "email":obj.email,
             'createdon':obj.createdon
         })
@@ -116,6 +123,7 @@ def getalluser(request):
                 'usernsme':users.user.username,
                 'firstname':users.firstname,
                 'lastname':users.lastname,
+                'mobilenumber':obj.mobilenumber,
                 "email":users.email,
             })
         return JsonResponse({'validation':'success','resposne':resposne,'status':True})
@@ -337,27 +345,71 @@ def changeuserpassword(request):
         elif validstring(newpassword):return JsonResponse({'validation':'enter valid newpassword,must be a string'})  
         elif validstring(confirmnewpassword):return JsonResponse({'validation':'enter valid confirmnewpassword,must be a string'})  
         
-        user =  get_user_model().objects.filter(username = username).exists()
-        if not user:
-            return JsonResponse({'response':'not a user','status':user})
+        with transaction.atomic():
+            user =  get_user_model().objects.filter(username = username).exists()
+            if not user:
+                return JsonResponse({'response':'not a user','status':user})
 
-        user =  get_user_model().objects.get(username = username)
-        check_password = user.check_password(oldpassword) 
+            user =  get_user_model().objects.get(username = username)
+            check_password = user.check_password(oldpassword) 
 
-        if not check_password:
-            return JsonResponse({'response':'wrong password','status':check_password})
-        if not (newpassword == confirmnewpassword):
-            return JsonResponse({'response':('missmatch password',newpassword,confirmnewpassword),'status':False})
+            if not check_password:
+                return JsonResponse({'response':'wrong password','status':check_password})
+            if not (newpassword == confirmnewpassword):
+                return JsonResponse({'response':('missmatch password',newpassword,confirmnewpassword),'status':False})
 
-        user.set_password(newpassword)
-        user.save()
+            user.set_password(newpassword)
+            user.save()
+            return JsonResponse({'response':'successfuly change password','status':True})
 
-        return JsonResponse({'response':'successfuly change password','status':True})
     except Exception as e:
             return JsonResponse({'response':str(e),'status':False})
             #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+def forgetuserpassword(request):
+    params = request.POST
 
+    username = params.get('username') 
+    mobilenumber = params.get('mobilenumber')
+    newpassword = params.get('newpassword')
+    confirmnewpassword = params.get('confirmnewpassword')
+    otp = int(params.get('otp'))
+    number = 123456
+
+    try:
+        if validstring(username):return JsonResponse({'validation':'enter valid username ,must be a string'})        
+        elif validmobilenumber(mobilenumber):return JsonResponse({'validation':'enter valid mobilenumber ,must be a string and 10 digit'})    
+        elif validstring(newpassword):return JsonResponse({'validation':'enter valid newpassword,must be a string'})  
+        elif validstring(confirmnewpassword):return JsonResponse({'validation':'enter valid confirmnewpassword,must be a string'})  
+        elif validinteger(otp):return JsonResponse({'validation':'enter valid otp,must be a integer'})  
+        
+        with transaction.atomic():
+                
+            user = get_user_model().objects.filter(username = username).exists()
+            if not user:
+                return JsonResponse({'response':'not a user','status':user})
+            user = get_user_model().objects.get(username = username)
+
+            if user:
+                userobj = Userprofile.objects.get(mobilenumber = mobilenumber)
+                mobileobj = userobj.mobilenumber
+                
+                if mobileobj != mobilenumber:
+                    return JsonResponse({'response':'incorrect mobile number','status':False})
+
+                if otp != number:
+                    return JsonResponse({'response':'incorrect otp','status':False})
+
+                if newpassword != confirmnewpassword:
+                    return JsonResponse({'response':('missmatch password',newpassword,confirmnewpassword),'status':False})
+                
+                user.set_password(confirmnewpassword)
+                user.save()
+                return JsonResponse({'response':'successfuly change password','status':True})
+
+    except Exception as e:
+        return JsonResponse({'response':str(e),'status':False})
+            #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
        
 

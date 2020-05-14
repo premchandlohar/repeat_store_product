@@ -13,3 +13,5 @@ def validemail(email):
    , email) or email=='' else False)
 
 def validimage (image): return (True if not (str(image).endswith(('.jpeg','.jpg','.png','.webp')))else False)
+
+def validmobilenumber(mobileno):return(True if type(mobileno)!=str or mobileno=='' or mobileno==None or len(mobileno)!=10 else False)

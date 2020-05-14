@@ -17,6 +17,7 @@ urlpatterns = [
     path('getaddressesbyuserid/', views.getaddressesbyuserid),
     path('userlogin/', views.userlogin),
     path('changeuserpassword/', views.changeuserpassword),
+    path('forgetuserpassword/', views.forgetuserpassword),
 
 
     # path('accounts/login/', auth_views.LoginView.as_view()),
