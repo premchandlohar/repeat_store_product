@@ -7,6 +7,7 @@ from validator import *
 from django.contrib.auth import authenticate, login
 # Create your views here.
 from django.contrib.auth.decorators import login_required
+import jwt
 
 
 # Create your views here.
@@ -123,7 +124,7 @@ def getalluser(request):
                 'usernsme':users.user.username,
                 'firstname':users.firstname,
                 'lastname':users.lastname,
-                'mobilenumber':obj.mobilenumber,
+                'mobilenumber':users.mobilenumber,
                 "email":users.email,
             })
         return JsonResponse({'validation':'success','resposne':resposne,'status':True})
@@ -322,8 +323,10 @@ def userlogin(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
+                encodedtoken = jwt.encode({'some': 'payload'}, 'secret', algorithm='HS256')
+                decodedtoken = encodedtoken.decode('utf-8')
                 # return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
-                return JsonResponse({'validation':'success','status':True})
+                return JsonResponse({'validation':'success','status':True,'token': decodedtoken})
             else:
                 return JsonResponse({'validation':str(e),'status':False})
 
@@ -409,9 +412,40 @@ def forgetuserpassword(request):
 
     except Exception as e:
         return JsonResponse({'response':str(e),'status':False})
-            #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-       
+# def login(request):
+#     m = get_user_model().objects.get(username=request.POST['username'])
+#     if m.password == request.POST['password']:
+#         request.session['user_id'] = m.id
+#         return JsonResponse({'response':'You\'re logged in.'})
+#     else:
+#         return JsonResponse({'response':"Your username and password didn't match."})
+    #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# def getuserbytoken(request,userlogin):
+    
+#     resposne = []
+
+    
+
+#     try:
+#         if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})
+        
+#         obj = Userprofile.objects.get(id = userid)
+#         resposne.append({
+#             'userid':obj.id,
+#             'usernsme':obj.user.username,
+#             'firstname':obj.firstname,
+#             'lastname':obj.lastname,
+#             'age':obj.age,
+#             'mobilenumber':obj.mobilenumber,
+#             "email":obj.email,
+#             'createdon':obj.createdon
+#         })
+#         return JsonResponse({'validation':'success','resposne':resposne,'status':True})
+#     except Exception as e:
+#         return JsonResponse({'validation':str(e),'status':False})
 
 
 

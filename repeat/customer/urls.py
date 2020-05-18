@@ -18,6 +18,7 @@ urlpatterns = [
     path('userlogin/', views.userlogin),
     path('changeuserpassword/', views.changeuserpassword),
     path('forgetuserpassword/', views.forgetuserpassword),
+    path('login/', views.login),
 
 
     # path('accounts/login/', auth_views.LoginView.as_view()),
