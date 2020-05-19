@@ -6,215 +6,215 @@ from django.db import transaction
 from validator import *
 # Create your views here.
 
-def createstore(request):
+def create_store(request):
     params = request.POST
     try:
-        storename = params.get('storename')
-        storeaddress = params.get('storeaddress')
-        storelocation = params.get('storelocation')
-        storelatitude = float(params.get('storelatitude'))
-        storelongitude = float(params.get('storelongitude'))
-        storecity = params.get('storecity')
-        storestate = params.get('storestate')
-        storeimage = request.FILES.get('storeimage')
+        store_name = params.get('store_name')
+        store_address = params.get('store_address')
+        store_location = params.get('store_location')
+        store_latitude = float(params.get('store_latitude'))
+        store_longitude = float(params.get('store_longitude'))
+        store_city = params.get('store_city')
+        store_state = params.get('store_state')
+        store_image = request.FILES.get('store_image')
 
-        if validstring(storename): return JsonResponse({'validation':'enter valid storename,must be string'})
-        elif validstring(storeaddress): return JsonResponse({'validation':'enter valid storeaddress,must be string'})
-        elif validstring(storelocation): return JsonResponse({'validation':'enter valid storelocation,must be string'})
-        elif validfloat(storelatitude): return JsonResponse({'validation':'enter valid storelatitude,must float'})
-        elif validfloat(storelongitude): return JsonResponse({'validation':'enter valid storelongitude,must be float'})
-        elif validstring(storecity): return JsonResponse({'validation':'enter valid storecity,must be string'})
-        elif validstring(storestate): return JsonResponse({'validation':'enter valid storestate,must string'})
-        elif validstring(storestate): return JsonResponse({'validation':'enter valid storestate,must string'})
-        elif validimage(storeimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_string(store_name): return JsonResponse({'validation':'enter valid store_name,must be string'})
+        elif valid_string(store_address): return JsonResponse({'validation':'enter valid store_address,must be string'})
+        elif valid_string(store_location): return JsonResponse({'validation':'enter valid store_location,must be string'})
+        elif valid_float(store_latitude): return JsonResponse({'validation':'enter valid store_latitude,must float'})
+        elif valid_float(store_longitude): return JsonResponse({'validation':'enter valid store_longitude,must be float'})
+        elif valid_string(store_city): return JsonResponse({'validation':'enter valid store_city,must be string'})
+        elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
+        elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
+        elif valid_image(store_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
 
         with transaction.atomic():
-            createstoreobj = Store.objects.create(
-                storename = storename,
-                storeaddress = storeaddress,
-                storelocation = storelocation,
-                storelatitude = storelatitude,
-                storelongitude = storelongitude,
-                storecity = storecity,
-                storestate = storestate,
-                storeimage = storeimage
+            create_store_obj = Store.objects.create(
+                store_name = store_name,
+                store_address = store_address,
+                store_location = store_location,
+                store_latitude = store_latitude,
+                store_longitude = store_longitude,
+                store_city = store_city,
+                store_state = store_state,
+                store_image = store_image
             )
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def updatestore(request):
+def update_store(request):
     params = request.POST
     try:
-        storeid = params.get('storeid')
-        storename = params.get('storename')
-        storeaddress = params.get('storeaddress')
-        storelocation = params.get('storelocation')
-        storelatitude = float(params.get('storelatitude'))
-        storelongitude = float(params.get('storelongitude'))
-        storecity = params.get('storecity')
-        storestate = params.get('storestate')
-        storeimage = request.FILES.get('storeimage')
+        store_id = params.get('store_id')
+        store_name = params.get('store_name')
+        store_address = params.get('store_address')
+        store_location = params.get('store_location')
+        store_latitude = float(params.get('store_latitude'))
+        store_longitude = float(params.get('store_longitude'))
+        store_city = params.get('store_city')
+        store_state = params.get('store_state')
+        store_image = request.FILES.get('store_image')
 
-        if validstring(storename): return JsonResponse({'validation':'enter valid storename,must be string'})
-        elif validstring(storeaddress): return JsonResponse({'validation':'enter valid storeaddress,must be string'})
-        elif validstring(storelocation): return JsonResponse({'validation':'enter valid storelocation,must be string'})
-        elif validfloat(storelatitude): return JsonResponse({'validation':'enter valid storelatitude,must float'})
-        elif validfloat(storelongitude): return JsonResponse({'validation':'enter valid storelongitude,must be float'})
-        elif validstring(storecity): return JsonResponse({'validation':'enter valid storecity,must be string'})
-        elif validstring(storestate): return JsonResponse({'validation':'enter valid storestate,must string'})
-        elif validstring(storestate): return JsonResponse({'validation':'enter valid storestate,must string'})
-        elif validimage(storeimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_string(store_name): return JsonResponse({'validation':'enter valid store_name,must be string'})
+        elif valid_string(store_address): return JsonResponse({'validation':'enter valid store_address,must be string'})
+        elif valid_string(store_location): return JsonResponse({'validation':'enter valid store_location,must be string'})
+        elif valid_float(store_latitude): return JsonResponse({'validation':'enter valid store_latitude,must float'})
+        elif valid_float(store_longitude): return JsonResponse({'validation':'enter valid store_longitude,must be float'})
+        elif valid_string(store_city): return JsonResponse({'validation':'enter valid store_city,must be string'})
+        elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
+        elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
+        elif valid_image(store_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
 
         with transaction.atomic():
-            storeobj = Store.objects.get(id = storeid)
-            print(storeobj)
-            storeobj.storename = storename
-            storeobj.storeaddress = storeaddress
-            storeobj.storelocation = storelocation
-            storeobj.storelatitude = storelatitude
-            print(storelatitude)
-            storeobj.storelongitude = storelongitude
-            storeobj.storecity = storecity
-            storeobj.storestate = storestate
-            storeobj.storeimage = storeimage
-            storeobj.save()
+            store_obj = Store.objects.get(id = store_id)
+            print(store_obj)
+            store_obj.store_name = store_name
+            store_obj.store_address = store_address
+            store_obj.store_location = store_location
+            store_obj.store_latitude = store_latitude
+            print(store_latitude)
+            store_obj.store_longitude = store_longitude
+            store_obj.store_city = store_city
+            store_obj.store_state = store_state
+            store_obj.store_image = store_image
+            store_obj.save()
 
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def getstore(request):
+def get_store(request):
     params = json.loads(request.body)
     response =[]
     try:
-        storeid = params.get('storeid')
-        if validinteger(storeid): return JsonResponse({'validation':'enter valid storeid,must be int'})
+        store_id = params.get('store_id')
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
 
-        obj = Store.objects.get(id=storeid)
+        obj = Store.objects.get(id=store_id)
 
         response.append({
-            'storeid' :obj.id,
-            'storename' :obj.storename,
-            'storeaddress' :obj.storeaddress,
-            'storelocation' :obj.storelocation,
-            'storelatitude' :obj.storelatitude,
-            'storelongitude' :obj.storelongitude,
-            'storecity' :obj.storecity,
-            'storestate' :obj.storestate,
-            'storeimage' :str(obj.storeimage),
-            'createdon' :obj.createdon
+            'store_id' :obj.id,
+            'store_name' :obj.store_name,
+            'store_address' :obj.store_address,
+            'store_location' :obj.store_location,
+            'store_latitude' :obj.store_latitude,
+            'store_longitude' :obj.store_longitude,
+            'store_city' :obj.store_city,
+            'store_state' :obj.store_state,
+            'store_image' :str(obj.store_image),
+            'created_on' :obj.created_on
         })
         return JsonResponse({'validation':'success','responsse':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def getallstore(request):
+def get_all_store(request):
     response = []
     try:
         obj = Store.objects.all()
 
         for store in obj:
             response.append({
-                'storeid' :store.id,
-                'storename' :store.storename,
-                'storeaddress' :store.storeaddress,
-                'storelocation' :store.storelocation,
-                'storelatitude' :store.storelatitude,
-                'storelongitude' :store.storelongitude,
-                'storecity' :store.storecity,
-                'storestate' :store.storestate,
-                'storeimage' :str(store.storeimage),
-                'createdon' :store.createdon
+                'store_id' :store.id,
+                'store_name' :store.store_name,
+                'store_address' :store.store_address,
+                'store_location' :store.store_location,
+                'store_latitude' :store.store_latitude,
+                'store_longitude' :store.store_longitude,
+                'store_city' :store.store_city,
+                'store_state' :store.store_state,
+                'store_image' :str(store.store_image),
+                'created_on' :store.created_on
             })
         return JsonResponse({'validation':'success','responsse':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def deletestore(request):
+def delete_store(request):
     params = json.loads(request.body)
     try:
-        storeid = params.get('storeid')
-        if validinteger(storeid): return JsonResponse({'validation':'enter valid storeid,must be int'})
+        store_id = params.get('store_id')
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
        
-        obj = Store.objects.get(id=storeid).delete()
+        obj = Store.objects.get(id=store_id).delete()
         return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
     
-def createcategory(request):
+def create_category(request):
     params = request.POST
     try:
-        storeid = int(params.get('storeid'))
-        categoryname = params.get('categoryname')
-        categoryimage = request.FILES.get('categoryimage')
+        store_id = int(params.get('store_id'))
+        category_name = params.get('category_name')
+        category_image = request.FILES.get('category_image')
 
-        if validinteger(storeid): return JsonResponse({'validation':'enter valid storeid,must be int'})
-        elif validstring(categoryname): return JsonResponse({'validation':'enter valid categoryname,must string'})
-        elif validimage(categoryimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
+        elif valid_string(category_name): return JsonResponse({'validation':'enter valid category_name,must string'})
+        elif valid_image(category_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
 
         with transaction.atomic():
-            storeobj = Store.objects.get(id = storeid)
-            createcategoryobj = Category.objects.create(
-                store = storeobj,
-                categoryname = categoryname,
-                categoryimage = categoryimage,
+            store_obj = Store.objects.get(id = store_id)
+            create_category_obj = Category.objects.create(
+                store = store_obj,
+                category_name = category_name,
+                category_image = category_image,
             )
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
     
-def updatecategory(request):
+def update_category(request):
     params = request.POST
 
-    categoryid = int(params.get('categoryid'))
-    categoryname = params.get('categoryname')
-    categoryimage = request.FILES.get('categoryimage')
+    category_id = int(params.get('category_id'))
+    category_name = params.get('category_name')
+    category_image = request.FILES.get('category_image')
 
     try:
-        if validinteger(categoryid): return JsonResponse({'validation':'enter valid categoryid,must be int'})
-        elif validstring(categoryname): return JsonResponse({'validation':'enter valid categoryname,must string'})
-        elif validimage(categoryimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(category_id): return JsonResponse({'validation':'enter valid category_id,must be int'})
+        elif valid_string(category_name): return JsonResponse({'validation':'enter valid category_name,must string'})
+        elif valid_image(category_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
        
         with transaction.atomic():
-            obj = Category.objects.get(id = categoryid)
-            obj.categoryname = categoryname
-            obj.categoryimage = categoryimage
+            obj = Category.objects.get(id = category_id)
+            obj.category_name = category_name
+            obj.category_image = category_image
             obj.save()
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def getcategory(request):
+def get_category(request):
     params = json.loads(request.body)
     response = []
 
-    categoryid = params.get('categoryid')
-    if validinteger(categoryid): return JsonResponse({'validation':'enter valid categoryid,must be int'})
+    category_id = params.get('category_id')
+    if valid_integer(category_id): return JsonResponse({'validation':'enter valid category_id,must be int'})
 
     try:
-        obj = Category.objects.get(id = categoryid)
+        obj = Category.objects.get(id = category_id)
         response.append({
-            'storeid':obj.store.id,
-            'categoryid':obj.id,
-            'categoryname':obj.categoryname,
-            'storename':obj.store.storename,
-            'categoryimage':str(obj.categoryimage),
-            'createdon':obj.createdon
+            'store_id':obj.store.id,
+            'category_id':obj.id,
+            'category_name':obj.category_name,
+            'store_name':obj.store.store_name,
+            'category_image':str(obj.category_image),
+            'created_on':obj.created_on
         })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def getallcategory(request):
+def get_all_category(request):
     response = []
 
     try:
@@ -222,105 +222,105 @@ def getallcategory(request):
 
         for categories in obj:
             response.append({
-                'categoryid':categories.id,
-                'categoryname':categories.categoryname,
-                'createdon':categories.createdon
+                'category_id':categories.id,
+                'category_name':categories.category_name,
+                'created_on':categories.created_on
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def deletecategory(request):
+def delete_category(request):
     params = json.loads(request.body)
 
-    categoryid = params.get('categoryid')
+    category_id = params.get('category_id')
 
     try:
-        if validinteger(categoryid): return JsonResponse({'validation':'enter valid categoryid,must be int'})
-        obj = Category.objects.get(id = categoryid).delete()
+        if valid_integer(category_id): return JsonResponse({'validation':'enter valid category_id,must be int'})
+        obj = Category.objects.get(id = category_id).delete()
         return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def createsubcategory(request):
+def create_subcategory(request):
     params = request.POST
 
-    storeid = int(params.get('storeid'))
-    categoryid = int(params.get('categoryid'))
-    subcategoryname = params.get('subcategoryname')
-    subcategoryimage = request.FILES.get('subcategoryimage')
-    createdon = params.get('createdon')
+    store_id = int(params.get('store_id'))
+    category_id = int(params.get('category_id'))
+    subcategory_name = params.get('subcategory_name')
+    subcategory_image = request.FILES.get('subcategory_image')
+    created_on = params.get('created_on')
 
     try:
-        if validinteger(storeid): return JsonResponse({'validation':'enter valid storid,must be int'})
-        elif validinteger(categoryid): return JsonResponse({'validation':'enter valid categoryid,must be int'})
-        elif validstring(subcategoryname): return JsonResponse({'validation':'enter valid subcategoryname,must string'})
-        elif validimage(subcategoryimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid storid,must be int'})
+        elif valid_integer(category_id): return JsonResponse({'validation':'enter valid category_id,must be int'})
+        elif valid_string(subcategory_name): return JsonResponse({'validation':'enter valid subcategory_name,must string'})
+        elif valid_image(subcategory_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
        
         with transaction.atomic():
-            storeobj = Store.objects.get(id = storeid)
-            categoryobj = Category.objects.get(id = categoryid)
-            createsubcategoryobj = Subcategory.objects.create(
-                store = storeobj,
-                category = categoryobj,
-                subcategoryname = subcategoryname,
-                subcategoryimage = subcategoryimage
+            store_obj = Store.objects.get(id = store_id)
+            category_obj = Category.objects.get(id = category_id)
+            create_subcategory_obj = Subcategory.objects.create(
+                store = store_obj,
+                category = category_obj,
+                subcategory_name = subcategory_name,
+                subcategory_image = subcategory_image
             )
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def updatesubcategory(request):
+def update_subcategory(request):
     params = request.POST
 
-    subcategoryid = int(params.get('subcategoryid'))
-    subcategoryname = params.get('subcategoryname')
-    subcategoryimage = request.FILES.get('subcategoryimage')
+    subcategory_id = int(params.get('subcategory_id'))
+    subcategory_name = params.get('subcategory_name')
+    subcategory_image = request.FILES.get('subcategory_image')
 
     try:
-        if validinteger(subcategoryid): return JsonResponse({'validation':'enter valid subcategoryid,must be int'})
-        elif validstring(subcategoryname): return JsonResponse({'validation':'enter valid subcategoryname,must string'})
-        elif validimage(subcategoryimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(subcategory_id): return JsonResponse({'validation':'enter valid subcategory_id,must be int'})
+        elif valid_string(subcategory_name): return JsonResponse({'validation':'enter valid subcategory_name,must string'})
+        elif valid_image(subcategory_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
        
         with transaction.atomic():
-            obj = Subcategory.objects.get(id = subcategoryid)
-            obj.subcategoryname = subcategoryname
-            obj.subcategoryimage = subcategoryimage
+            obj = Subcategory.objects.get(id = subcategory_id)
+            obj.subcategory_name = subcategory_name
+            obj.subcategory_image = subcategory_image
             obj.save()
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
 
-def getsubcategory(request):
+def get_subcategory(request):
     params = json.loads(request.body)
     response = []
 
-    subcategoryid = params.get('subcategoryid')
+    subcategory_id = params.get('subcategory_id')
     
     try:
-        if validinteger(subcategoryid): return JsonResponse({'validation':'enter valid subcategoryid,must be int'})
+        if valid_integer(subcategory_id): return JsonResponse({'validation':'enter valid subcategory_id,must be int'})
 
-        obj = Subcategory.objects.get(id=subcategoryid)
+        obj = Subcategory.objects.get(id=subcategory_id)
         response.append({
-            'subcategoryid':obj.id,
-            'categoryid':obj.category.id,
-            'storeid':obj.store.id,
-            'subcategoryname':obj.subcategoryname,
-            'categoryname':obj.category.categoryname,
-            'storename':obj.store.storename,
-            'subcategoryimage':str(obj.subcategoryimage),
-            'createdon':obj.createdon
+            'subcategory_id':obj.id,
+            'category_id':obj.category.id,
+            'store_id':obj.store.id,
+            'subcategory_name':obj.subcategory_name,
+            'category_name':obj.category.category_name,
+            'store_name':obj.store.store_name,
+            'subcategory_image':str(obj.subcategory_image),
+            'created_on':obj.created_on
         })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getallsubcategory(request):
+def get_all_subcategory(request):
     response =[]
 
     try:
@@ -328,221 +328,221 @@ def getallsubcategory(request):
 
         for subcategories in obj:
             response.append({
-                'subcategoryid':subcategories.id,
-                'subcategoryname':subcategories.subcategoryname,
-                'createdon':subcategories.createdon
+                'subcategory_id':subcategories.id,
+                'subcategory_name':subcategories.subcategory_name,
+                'created_on':subcategories.created_on
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def deletesubcategory(request):
+def delete_subcategory(request):
     params = json.loads(request.body)
 
-    subcategoryid = params.get('subcategoryid')
+    subcategory_id = params.get('subcategory_id')
     
     try:
-        if validinteger(subcategoryid): return JsonResponse({'validation':'enter valid subcategoryid,must be int'})
+        if valid_integer(subcategory_id): return JsonResponse({'validation':'enter valid subcategory_id,must be int'})
        
-        obj = Subcategory.objects.get(id=subcategoryid).delete()
+        obj = Subcategory.objects.get(id=subcategory_id).delete()
         return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def createproduct(request):
+def create_product(request):
     params = request.POST   
 
-    storeid = int(params.get('storeid'))
-    subcategoryid = int(params.get('subcategoryid'))
-    productname = params.get('productname')
-    productquantity = int(params.get('productquantity'))
-    productprice = float(params.get('productprice'))
-    productdiscountprice = float(params.get('productdiscountprice'))
-    productdescription = params.get('productdescription')
-    productimage = request.FILES.get('productimage')
+    store_id = int(params.get('store_id'))
+    subcategory_id = int(params.get('subcategory_id'))
+    product_name = params.get('product_name')
+    product_quantity = int(params.get('product_quantity'))
+    product_price = float(params.get('product_price'))
+    product_discount_price = float(params.get('product_discount_price'))
+    product_description = params.get('product_description')
+    product_image = request.FILES.get('product_image')
 
     try:
-        if validinteger(storeid): return JsonResponse({'validation':'enter valid storeid,must be int'})
-        elif validinteger(subcategoryid): return JsonResponse({'validation':'enter valid subcategoryid,must be int'})
-        elif validstring(productname): return JsonResponse({'validation':'enter valid productname,must string'})
-        elif validinteger(productquantity): return JsonResponse({'validation':'enter valid productquantity,must be int'})
-        elif validfloat(productprice): return JsonResponse({'validation':'enter valid productprice,must be float'})
-        elif validfloat(productdiscountprice): return JsonResponse({'validation':'enter valid productdiscountprice,must be float'})
-        elif validstring(productdescription): return JsonResponse({'validation':'enter valid productdescription,must string'})
-        elif validimage(productimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
+        elif valid_integer(subcategory_id): return JsonResponse({'validation':'enter valid subcategory_id,must be int'})
+        elif valid_string(product_name): return JsonResponse({'validation':'enter valid product_name,must string'})
+        elif valid_integer(product_quantity): return JsonResponse({'validation':'enter valid product_quantity,must be int'})
+        elif valid_float(product_price): return JsonResponse({'validation':'enter valid product_price,must be float'})
+        elif valid_float(product_discount_price): return JsonResponse({'validation':'enter valid product_discount_price,must be float'})
+        elif valid_string(product_description): return JsonResponse({'validation':'enter valid product_description,must string'})
+        elif valid_image(product_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
 
         with transaction.atomic():
-            storeobj = Store.objects.get(id=storeid)
-            subcategoryobj = Subcategory.objects.get(id=subcategoryid)
-            createproductobj = Product.objects.create(
-                store = storeobj,
-                subcategory = subcategoryobj,
-                productname = productname,
-                productquantity =productquantity,
-                productprice = productprice,
-                productdiscountprice = productdiscountprice,
-                productdescription = productdescription,
-                productimage = productimage
+            store_obj = Store.objects.get(id=store_id)
+            subcategory_obj = Subcategory.objects.get(id=subcategory_id)
+            create_product_obj = Product.objects.create(
+                store = store_obj,
+                subcategory = subcategory_obj,
+                product_name = product_name,
+                product_quantity =product_quantity,
+                product_price = product_price,
+                product_discount_price = product_discount_price,
+                product_description = product_description,
+                product_image = product_image
             )
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def updateproduct(request):
+def update_product(request):
     params = request.POST
 
-    productid = int(params.get('productid'))
-    # subcategoryid = int(params.get('subcategoryid'))
-    productname = params.get('productname')
-    productquantity = int(params.get('productquantity'))
-    productprice = float(params.get('productprice'))
-    productdiscountprice = float(params.get('productdiscountprice'))
-    productdescription = params.get('productdescription')
-    productimage = request.FILES.get('productimage')
+    product_id = int(params.get('product_id'))
+    # subcategory_id = int(params.get('subcategory_id'))
+    product_name = params.get('product_name')
+    product_quantity = int(params.get('product_quantity'))
+    product_price = float(params.get('product_price'))
+    product_discount_price = float(params.get('product_discount_price'))
+    product_description = params.get('product_description')
+    product_image = request.FILES.get('product_image')
 
     try:
-        if validinteger(productid): return JsonResponse({'validation':'enter valid productid,must be int'})
-        # elif validinteger(subcategoryid): return JsonResponse({'validation':'enter valid subcategoryid,must be int'})
-        elif validstring(productname): return JsonResponse({'validation':'enter valid productname,must string'})
-        elif validinteger(productquantity): return JsonResponse({'validation':'enter valid productquantity,must be int'})
-        elif validfloat(productprice): return JsonResponse({'validation':'enter valid productprice,must be float'})
-        elif validfloat(productdiscountprice): return JsonResponse({'validation':'enter valid productdiscountprice,must be float'})
-        elif validstring(productdescription): return JsonResponse({'validation':'enter valid productdescription,must string'})
-        elif validimage(productimage): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        if valid_integer(product_id): return JsonResponse({'validation':'enter valid product_id,must be int'})
+        # elif valid_integer(subcategory_id): return JsonResponse({'validation':'enter valid subcategory_id,must be int'})
+        elif valid_string(product_name): return JsonResponse({'validation':'enter valid product_name,must string'})
+        elif valid_integer(product_quantity): return JsonResponse({'validation':'enter valid product_quantity,must be int'})
+        elif valid_float(product_price): return JsonResponse({'validation':'enter valid product_price,must be float'})
+        elif valid_float(product_discount_price): return JsonResponse({'validation':'enter valid product_discount_price,must be float'})
+        elif valid_string(product_description): return JsonResponse({'validation':'enter valid product_description,must string'})
+        elif valid_image(product_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
 
         with transaction.atomic():
 
-            obj = Product.objects.get(id=productid)
-            obj.productname = productname
-            obj.productquantity =productquantity
-            obj.productprice = productprice
-            obj.productdiscountprice = productdiscountprice
-            obj.productdescription = productdescription
-            obj.productimage = productimage
+            obj = Product.objects.get(id=product_id)
+            obj.product_name = product_name
+            obj.product_quantity =product_quantity
+            obj.product_price = product_price
+            obj.product_discount_price = product_discount_price
+            obj.product_description = product_description
+            obj.product_image = product_image
             obj.save()
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getproduct(request):
+def get_product(request):
     params = json.loads(request.body)
     response = []
 
-    productid = params.get('productid')
+    product_id = params.get('product_id')
 
     try:
-        if validinteger(productid): return JsonResponse({'validation':'enter valid productid,must be int'})
+        if valid_integer(product_id): return JsonResponse({'validation':'enter valid product_id,must be int'})
 
-        obj = Product.objects.get(id=productid)
+        obj = Product.objects.get(id=product_id)
         response.append({
-            'storeid':obj.store.id,
-            'subcategoryid':obj.subcategory.id,
-            'productid':obj.id,
-            'productname':obj.productname,
-            'subcategoryname':obj.subcategory.subcategoryname,
-            'storename':obj.store.storename,
-            'createdon':obj.createdon
+            'store_id':obj.store.id,
+            'subcategory_id':obj.subcategory.id,
+            'product_id':obj.id,
+            'product_name':obj.product_name,
+            'subcategory_name':obj.subcategory.subcategory_name,
+            'store_name':obj.store.store_name,
+            'created_on':obj.created_on
         })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getallproduct(request):
+def get_all_product(request):
     response = []
 
     try:
         obj = Product.objects.all()
         for products in obj:
             response.append({
-                'productid':products.id,
-                'productname':products.productname,
-                'createdon':products.createdon
+                'product_id':products.id,
+                'product_name':products.product_name,
+                'created_on':products.created_on
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def deleteproduct(request):
+def delete_product(request):
     params = json.loads(request.body)
 
-    productid = params.get('productid')
+    product_id = params.get('product_id')
 
     try:
-        if validinteger(productid): return JsonResponse({'validation':'enter valid productid,must be int'})
+        if valid_integer(product_id): return JsonResponse({'validation':'enter valid product_id,must be int'})
 
-        obj = Product.objects.get(id = productid).delete()
+        obj = Product.objects.get(id = product_id).delete()
         return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def addfollowership(request):
+def add_followership(request):
     params = json.loads(request.body)
 
-    userid = params.get('userid')
-    storeid = params.get('storeid')
+    user_id = params.get('user_id')
+    store_id = params.get('store_id')
 
     try:
-        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
-        elif validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
+        if valid_integer(user_id):return JsonResponse({'validation':'enter valid user_id,must be a integer'})  
+        elif valid_integer(store_id):return JsonResponse({'validation':'enter valid store_id,must be a integer'})  
 
         with transaction.atomic():
-            userobj = Userprofile.objects.get(id = userid)
-            storeobj = Store.objects.get(id = storeid)
+            user_obj = Userprofile.objects.get(id = user_id)
+            store_obj = Store.objects.get(id = store_id)
 
-            createfollowershipobj = Followership.objects.create(
-                store = storeobj,
-                user = userobj
+            create_followership_obj = Followership.objects.create(
+                store = store_obj,
+                user = user_obj
             )
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def updatefollowership(request):
+def update_followership(request):
     params = json.loads(request.body)
     
-    followershipid = params.get('followershipid')
-    storeid = params.get('storeid')
-    userid = params.get('userid')
+    followership_id = params.get('followership_id')
+    store_id = params.get('store_id')
+    user_id = params.get('user_id')
     try:
-        if validinteger(followershipid):return JsonResponse({'validation':'enter valid followershipid,must be a integer'})  
-        elif validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
-        elif validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+        if valid_integer(followership_id):return JsonResponse({'validation':'enter valid followership_id,must be a integer'})  
+        elif valid_integer(store_id):return JsonResponse({'validation':'enter valid store_id,must be a integer'})  
+        elif valid_integer(user_id):return JsonResponse({'validation':'enter valid user_id,must be a integer'})  
 
         with transaction.atomic():
-            userobj = Userprofile.objects.get(id = userid)
-            storeobj = Store.objects.get(id = storeid)
+            user_obj = Userprofile.objects.get(id = user_id)
+            store_obj = Store.objects.get(id = store_id)
 
-            obj = Followership.objects.get(id = followershipid)
-            obj.store = storeobj
-            obj.user = userobj
+            obj = Followership.objects.get(id = followership_id)
+            obj.store = store_obj
+            obj.user = user_obj
             obj.save()
             return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getfollowersbystore(request):
+def get_followers_by_store(request):
     params = json.loads(request.body)
     response = []
 
-    storeid = params.get('storeid')
+    store_id = params.get('store_id')
 
     try:
-        if validinteger(storeid):return JsonResponse({'validation':'enter valid storeid,must be a integer'})  
+        if valid_integer(store_id):return JsonResponse({'validation':'enter valid store_id,must be a integer'})  
 
-        storeobj = Store.objects.get(id = storeid)
-        followerobj = storeobj.follower.all()
-        for users in followerobj:
+        store_obj = Store.objects.get(id = store_id)
+        follower_obj = store_obj.follower.all()
+        for users in follower_obj:
             response.append({
-                'userid':users.user.id,
+                'user_id':users.user.id,
                 'firstname':users.user.firstname
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
@@ -550,53 +550,53 @@ def getfollowersbystore(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getstoresbyfollower(request):
+def get_stores_by_follower(request):
     params = json.loads(request.body)
     response = []
 
-    userid = params.get('userid')
+    user_id = params.get('user_id')
 
     try:
-        if validinteger(userid):return JsonResponse({'validation':'enter valid userid,must be a integer'})  
+        if valid_integer(user_id):return JsonResponse({'validation':'enter valid user_id,must be a integer'})  
 
-        userobj =Userprofile.objects.get(id = userid)
-        followingobj = userobj.following.all()
-        for stores in followingobj:
+        user_obj =Userprofile.objects.get(id = user_id)
+        following_obj = user_obj.following.all()
+        for stores in following_obj:
             response.append({
-                'storeid':stores.store.id,
-                'storename':stores.store.storename
+                'store_id':stores.store.id,
+                'store_name':stores.store.store_name
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def removeuserbysomereason(request):
+def remove_user_by_some_reason(request):
     params = json.loads(request.body)
      
-    followershipid = params.get('followershipid')
+    followership_id = params.get('followership_id')
     reason = params.get('reason')
 
     try:
-        if validinteger(followershipid):return JsonResponse({'validation':'enter valid followershipid,must be a integer'})  
-        elif validinteger(reason):return JsonResponse({'validation':'enter valid reason,must be a integer'})  
+        if valid_integer(followership_id):return JsonResponse({'validation':'enter valid followership_id,must be a integer'})  
+        elif valid_integer(reason):return JsonResponse({'validation':'enter valid reason,must be a integer'})  
 
-        followerobj = Followership.objects.get(id = followershipid)
-        followerobj.user = None
-        followerobj.reason = reason
-        followerobj.save()
+        follower_obj = Followership.objects.get(id = followership_id)
+        follower_obj.user = None
+        follower_obj.reason = reason
+        follower_obj.save()
         return JsonResponse({'validation':'success','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def getallfollowerships(request):
+def get_all_followerships(request):
     response = []
 
     try:
-        followerobj = Followership.objects.all()
+        follower_obj = Followership.objects.all()
 
-        for followers in followerobj:
+        for followers in follower_obj:
             response.append(followers.getjson())
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:

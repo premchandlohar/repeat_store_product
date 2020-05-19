@@ -6,17 +6,17 @@ from django.contrib.auth import get_user_model
 class Userprofile(models.Model):
 
     user = models.OneToOneField(get_user_model(),on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=30)
-    lastname = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
     age = models.PositiveSmallIntegerField()
-    mobilenumber = models.CharField(max_length=12)
+    mobile_number = models.CharField(max_length=12)
     email = models.EmailField(max_length=255,unique=False)
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
     # following= models.ManyToManyField(Store, through = 'Followership',related_name='following',
     # blank =True)
 
     def __str__(self):
-        return self.firstname + " " + self.lastname
+        return self.first_name + " " + self.last_name
 
     # def get_json(self):
     #     return {
@@ -41,9 +41,9 @@ class Userprofile(models.Model):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 class Address(models.Model):
-    userprofile = models.ForeignKey(Userprofile,on_delete=models.CASCADE,related_name='addresses')
-    buildingname =  models.CharField(max_length=30)
-    streetname =  models.CharField(max_length=30)
+    user_profile = models.ForeignKey(Userprofile,on_delete=models.CASCADE,related_name='addresses')
+    building_name =  models.CharField(max_length=30)
+    street_name =  models.CharField(max_length=30)
     locality =  models.CharField(max_length=30)
     city =  models.CharField(max_length=30)
     district =  models.CharField(max_length=30)
@@ -51,7 +51,7 @@ class Address(models.Model):
     pincode =  models.DecimalField(max_digits = 10,decimal_places = 4)
 
     def __str__(self):
-        return self.userprofile.firstname +" "+ self.userprofile.lastname
+        return self.user_profile.first_name +" "+ self.user_profile.last_name
 
     class Meta:
         verbose_name = "Address"

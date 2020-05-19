@@ -7,19 +7,19 @@ from customer.models import Userprofile
 
 # Create your models here.
 class Store(models.Model):
-    storename = models.CharField(max_length=30)
-    storelocation = models.CharField(max_length=30)
-    storeaddress = models.CharField(max_length=50)
-    storelatitude = models.DecimalField(max_digits=10,decimal_places=3)
-    storelongitude = models.DecimalField(max_digits=10,decimal_places=3)
-    storecity = models.CharField(max_length=25)
-    storestate = models.CharField(max_length=25)
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
-    storeimage = models.ImageField(upload_to ='uploads/%Y/%m/%d/',null = True,blank= True)
+    store_name = models.CharField(max_length=30)
+    store_location = models.CharField(max_length=30)
+    store_address = models.CharField(max_length=50)
+    store_latitude = models.DecimalField(max_digits=10,decimal_places=3)
+    store_longitude = models.DecimalField(max_digits=10,decimal_places=3)
+    store_city = models.CharField(max_length=25)
+    store_state = models.CharField(max_length=25)
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    store_image = models.ImageField(upload_to ='uploads/%Y/%m/%d/',null = True,blank= True)
     # follower = models.ManyToManyField(Userprofile, through = 'Followership',related_name='followers')
 
     def __str__(self):
-        return self.storename
+        return self.store_name
 
     # def get_json(self):
     #     return {
@@ -37,13 +37,13 @@ class Store(models.Model):
     # *******************************************************************************************
 class Category(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
-    categoryname = models.CharField(max_length=30)
-    categoryimage = models.ImageField(upload_to = 'uploads',null = True)
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    category_name = models.CharField(max_length=30)
+    category_image = models.ImageField(upload_to = 'uploads',null = True)
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 
 
     def __str__(self):
-        return self.categoryname
+        return self.category_name
 
     class Meta:
         verbose_name = "Category"
@@ -82,13 +82,13 @@ class Category(models.Model):
 class Subcategory(models.Model):
     store  = models.ForeignKey(Store, on_delete=models.CASCADE)
     category  = models.ForeignKey(Category, on_delete=models.CASCADE)
-    subcategoryname  = models.CharField(max_length=30)
-    subcategoryimage  = models.ImageField(upload_to = 'uploads',null = True) 
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    subcategory_name  = models.CharField(max_length=30)
+    subcategory_image  = models.ImageField(upload_to = 'uploads',null = True) 
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
 
 
     def __str__(self):
-        return self.subcategoryname
+        return self.subcategory_name
 
     class Meta:
         verbose_name = "Subcategory"
@@ -131,16 +131,16 @@ class Subcategory(models.Model):
 class Product(models.Model):
     store   = models.ForeignKey(Store, on_delete=models.CASCADE)
     subcategory  = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
-    productname  = models.CharField(max_length=30)
-    productquantity  = models.IntegerField()
-    productprice  = models.FloatField()
-    productdiscountprice = models.FloatField()
-    productdescription  = models.TextField(max_length=801)
-    productimage  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
-    createdon = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    product_name  = models.CharField(max_length=30)
+    product_quantity  = models.IntegerField()
+    product_price  = models.FloatField()
+    product_discount_price = models.FloatField()
+    product_description  = models.TextField(max_length=801)
+    product_image  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
+    created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
   
     def __str__(self):
-        return self.productname
+        return self.product_name
  
     #    class instance method 
 
@@ -194,16 +194,16 @@ class Followership(models.Model):
                
     def getjson(self):
         if self.user == None:
-            return self.store.storename+': unfollow'
+            return self.store.store_name+': unfollow'
         else:
-            return self.store.storename + ': '  +self.user.firstname
+            return self.store.store_name + ': '  +self.user.first_name
                        
     def __str__(self):
         if self.user == None:
-            return self.store.storename+'- unfollow'
+            return self.store.store_name+'- unfollow'
         else:
-            return self.store.storename+ ' ' 'followers'+'-'+self.user.firstname
-            # return self.user.firstname + ' '+ self.store.storename      
+            return self.store.store_name+ ' ' 'followers'+'-'+self.user.first_name
+            # return self.user.first_name + ' '+ self.store.store_name      
     # ***********************************************************************************************
 
 
