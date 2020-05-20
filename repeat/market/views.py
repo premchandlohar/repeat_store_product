@@ -571,7 +571,7 @@ def get_stores_by_follower(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def remove_user_by_some_reason(request):
+def remove_follower_by_some_reason(request):
     params = json.loads(request.body)
      
     followership_id = params.get('followership_id')

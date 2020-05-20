@@ -17,8 +17,10 @@ urlpatterns = [
     path('get_addresses_by_user_id/', views.get_addresses_by_user_id),
     path('user_login/', views.user_login),
     path('change_user_password/', views.change_user_password),
-    path('forget_user_password/', views.forget_user_password),
+    path('forgot_user_password/', views.forgot_user_password),
     path('login/', views.login),
+    path('send_email/', views.send_email),
+    path('send_mass_email/', views.send_mass_email),
 
 
     # path('accounts/login/', auth_views.LoginView.as_view()),

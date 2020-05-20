@@ -9,6 +9,11 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 import jwt
 from datetime import timedelta,datetime 
+from django.core.mail import send_mail,BadHeaderError,send_mass_mail
+# from repeat import settings
+from django.conf import settings
+from repeat.settings import EMAIL_HOST_USER
+
 
 
 
@@ -380,13 +385,13 @@ def change_user_password(request):
 
             user.set_password(new_password)
             user.save()
-            return JsonResponse({'response':'successfuly change password','status':True})
+            return JsonResponse({'response':'successfully change password','status':True})
 
     except Exception as e:
             return JsonResponse({'response':str(e),'status':False})
             #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def forget_user_password(request):
+def forgot_user_password(request):
     params = request.POST
 
     username = params.get('username') 
@@ -425,44 +430,77 @@ def forget_user_password(request):
                 
                 user.set_password(confirm_new_password)
                 user.save()
-                return JsonResponse({'response':'successfuly change password','status':True})
+                return JsonResponse({'response':'successfully change password','status':True})
 
     except Exception as e:
         return JsonResponse({'response':str(e),'status':False})
             #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# def login(request):
-#     m = get_user_model().objects.get(username=request.POST['username'])
-#     if m.password == request.POST['password']:
-#         request.session['user_id'] = m.id
-#         return JsonResponse({'response':'You\'re logged in.'})
-#     else:
-#         return JsonResponse({'response':"Your username and password didn't match."})
+def login(request):
+    m = get_user_model().objects.get(username=request.POST['username'])
+    if m.password == request.POST['password']:
+        request.session['user_id'] = m.id
+        return JsonResponse({'response':'You\'re logged in.'})
+    else:
+        return JsonResponse({'response':"Your username and password didn't match."})
     #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# def getuserbytoken(request,userlogin):
-    
-#     resposne = []
+def send_email(request):#in this multiple receiver and single sender whose send same msg(only one) for all receiver
+    params = json.loads(request.body)
+    sub = params.get('sub')
+    body = params.get('body')
+    # sender = params.get('sender')
+    receiver1 = params.get('receiver1')
+    receiver2 = params.get('receiver2')
 
-    
+    # if valid_email(sender):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    if valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})   
 
-#     try:
-#         if valid_integer(user_id):return JsonResponse({'validation':'enter valid user_id,must be a integer'})
-        
-#         obj = Userprofile.objects.get(id = user_id)
-#         resposne.append({
-#             'user_id':obj.id,
-#             'usernsme':obj.user.username,
-#             'first_name':obj.first_name,
-#             'last_name':obj.last_name,
-#             'age':obj.age,
-#             'mobile_number':obj.mobile_number,
-#             "email":obj.email,
-#             'created_on':obj.created_on
-#         })
-#         return JsonResponse({'validation':'success','resposne':resposne,'status':True})
-#     except Exception as e:
-#         return JsonResponse({'validation':str(e),'status':False})
+    receiver = [receiver1,receiver2]
+    if sub and body and receiver:
+        try:
+            send_mail(sub,body,EMAIL_HOST_USER,receiver,fail_silently=False)
+            # print(obj)
+            # if (obj==1):
+            #     return JsonResponse({'response':'successfully send email','status':True})
+
+        except BadHeaderError:
+            return JsonResponse({'response':'invalid header found'})
+        return JsonResponse({'response':'successfully send email','status':True})
+    else:
+        return JsonResponse({'response':'make sure all fields are entered and valid'})
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#in this multiple receiver and multiple sender whose send differnt differnt msg for differnt receiver(one for other one for anothr) 
+def send_mass_email(request):
+    params = json.loads(request.body)
+    sub1 = params.get('sub1')
+    body1 = params.get('body1')
+    sub2 = params.get('sub2')
+    body2 = params.get('body2')
+    # sender = params.get('sender')
+    receiver1 = params.get('receiver1')
+    receiver2 = params.get('receiver2')
+    print(sub1,body1)
+
+    msg1 = (sub1,body1,EMAIL_HOST_USER,[receiver1])
+    msg2 = (sub2,body2,EMAIL_HOST_USER,[receiver2])
+
+
+    # if valid_email(sender):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    if valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})   
+
+    if msg1 and msg2:
+        try:
+            send_mass_mail((msg1,msg2),fail_silently=False)
+        except BadHeaderError:
+                return JsonResponse({'response':'invalid header found'})
+        return JsonResponse({'response':'successfully send email','status':True})
+    else:
+        return JsonResponse({'response':'make sure all fields are entered and valid'})
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 

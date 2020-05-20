@@ -28,7 +28,7 @@ urlpatterns = [
      path('update_followership/', views.update_followership),
      path('get_followers_by_store/', views.get_followers_by_store),
      path('get_stores_by_follower/', views.get_stores_by_follower),
-     path('remove_user_by_some_reason/', views.remove_user_by_some_reason),
+     path('remove_follower_by_some_reason/', views.remove_follower_by_some_reason),
      path('get_all_followerships/', views.get_all_followerships),
     
 ]
