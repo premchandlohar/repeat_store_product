@@ -508,10 +508,10 @@ def send_mass_email(request):
         return JsonResponse({'response':'successfully send email','status':True})
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        # Not all features of the EmailMessage class are available through the send_mail() and related wrapper functions.
-        # If you wish to use advanced features, such as BCC’ed recipients, file attachments, or multi-part email, you’ll need to create EmailMessage instances directly.
+ # Not all features of the EmailMessage class are available through the send_mail() and related wrapper functions.
+ # If you wish to use advanced features, such as BCC’ed recipients, file attachments, or multi-part email, you’ll need to create EmailMessage instances directly.
 def send_email_message(request):
     params = json.loads(request.body)
     sub = params.get('sub')
@@ -539,6 +539,7 @@ def send_email_message(request):
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 
