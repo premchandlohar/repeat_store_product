@@ -4,12 +4,12 @@ from .models import Userprofile,Address
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from validator import *
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 import jwt
 from datetime import timedelta,datetime 
-from django.core.mail import send_mail,BadHeaderError,send_mass_mail
+from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessage
 # from repeat import settings
 from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
@@ -343,10 +343,14 @@ def user_login(request):
                 
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            login(request, user)
-            payload = {}    
-            payload["user_id"] = 1   
-            payload["exp"] = datetime.utcnow() + timedelta(seconds = 864000)      
+            auth_login(request, user)
+            
+            payload = {'user_id':2,'exp':datetime.utcnow() + timedelta(seconds = 864000)}   
+            # print(payload)
+
+            # payload = {}    
+            # payload["user_id"] = 2
+            # payload["exp"] = datetime.utcnow() + timedelta(seconds = 864000)      
             token = jwt.encode(payload, "SECRET_KEY",algorithm='HS256').decode("utf-8")
             return JsonResponse({'validation':'success','status':True,'token': token})
         else:
@@ -454,7 +458,9 @@ def send_email(request):#in this multiple receiver and single sender whose send 
     receiver2 = params.get('receiver2')
 
     # if valid_email(sender):return JsonResponse({'validation':'enter valid email,must be a string'})   
-    if valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    if valid_string(sub):return JsonResponse({'validation':'enter valid sub,must be a string'})   
+    elif valid_string(body):return JsonResponse({'validation':'enter valid body,must be a string'})   
+    elif valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
     elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})   
 
     receiver = [receiver1,receiver2]
@@ -486,11 +492,13 @@ def send_mass_email(request):
 
     msg1 = (sub1,body1,EMAIL_HOST_USER,[receiver1])
     msg2 = (sub2,body2,EMAIL_HOST_USER,[receiver2])
-
-
-    # if valid_email(sender):return JsonResponse({'validation':'enter valid email,must be a string'})   
-    if valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
-    elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})   
+   
+    if valid_string(sub1):return JsonResponse({'validation':'enter valid sub1,must be a string'})   
+    elif valid_string(body1):return JsonResponse({'validation':'enter valid body1,must be a string'})  
+    elif valid_string(sub2):return JsonResponse({'validation':'enter valid sub2,must be a string'})   
+    elif valid_string(body2):return JsonResponse({'validation':'enter valid body2,must be a string'})   
+    elif valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})      
 
     if msg1 and msg2:
         try:
@@ -501,6 +509,37 @@ def send_mass_email(request):
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+        # Not all features of the EmailMessage class are available through the send_mail() and related wrapper functions.
+        # If you wish to use advanced features, such as BCC’ed recipients, file attachments, or multi-part email, you’ll need to create EmailMessage instances directly.
+def send_email_message(request):
+    params = json.loads(request.body)
+    sub = params.get('sub')
+    body = params.get('body')
+    receiver = params.get('receiver')
+    bcc_receiver = params.get('bcc_receiver')
+    cc_receiver = params.get('cc_receiver')
+
+    if valid_string(sub):return JsonResponse({'validation':'enter valid sub,must be a string'})   
+    elif valid_string(body):return JsonResponse({'validation':'enter valid body,must be a string'})   
+    elif valid_email(receiver):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    elif valid_email(bcc_receiver):return JsonResponse({'validation':'enter valid email,must be a string'})   
+    elif valid_email(cc_receiver):return JsonResponse({'validation':'enter valid email,must be a string'})   
+
+    if sub and body and receiver:
+        try:
+            mail_obj = EmailMessage(sub,body,EMAIL_HOST_USER,[receiver],[bcc_receiver],
+                headers={'Message-ID': 'foo'},cc=[cc_receiver],reply_to=[bcc_receiver])
+            fd = open('manage.py', 'r')
+            mail_obj.attach('manage.py', fd.read(), 'text/plain')
+            mail_obj.send()
+        except BadHeaderError:
+                return JsonResponse({'response':'invalid header found'})
+        return JsonResponse({'response':'successfully send email with attachment','status':True})
+    else:
+        return JsonResponse({'response':'make sure all fields are entered and valid'})
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 
 
 
