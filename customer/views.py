@@ -4,7 +4,7 @@ from .models import Userprofile,Address
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from validator import *
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 import jwt
@@ -13,7 +13,6 @@ from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessag
 # from repeat import settings
 from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
-
 
 
 

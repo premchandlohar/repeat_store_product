@@ -4,6 +4,9 @@ from .models import *
 import json
 from django.db import transaction
 from validator import *
+from django.core.mail import send_mail,BadHeaderError
+from repeat.settings import EMAIL_HOST_USER
+from customer.models import Userprofile
 # Create your views here.
 
 def create_store(request):
@@ -17,6 +20,12 @@ def create_store(request):
         store_city = params.get('store_city')
         store_state = params.get('store_state')
         store_image = request.FILES.get('store_image')
+        sub = 'New store open'
+        body = 'in the store_name some offers are available '
+        user_id = int(params.get('user_id'))
+
+        user_obj = Userprofile.objects.get(id = user_id)
+        user_mail = user_obj.email
 
         if valid_string(store_name): return JsonResponse({'validation':'enter valid store_name,must be string'})
         elif valid_string(store_address): return JsonResponse({'validation':'enter valid store_address,must be string'})
@@ -27,8 +36,11 @@ def create_store(request):
         elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
         elif valid_string(store_state): return JsonResponse({'validation':'enter valid store_state,must string'})
         elif valid_image(store_image): return JsonResponse({'validation':'select valid image file,must be a valid format'})
+        elif valid_string(sub):return JsonResponse({'validation':'enter valid sub,must be a string'})   
+        elif valid_string(body):return JsonResponse({'validation':'enter valid body,must be a string'})   
+        elif valid_email(user_mail):return JsonResponse({'validation':'enter valid email,must be a string'})
 
-        with transaction.atomic():
+        with transaction.atomic():           
             create_store_obj = Store.objects.create(
                 store_name = store_name,
                 store_address = store_address,
@@ -39,7 +51,19 @@ def create_store(request):
                 store_state = store_state,
                 store_image = store_image
             )
-            return JsonResponse({'validation':'success','status':True})
+
+            if sub and body and user_mail:
+                try:
+                    send_mail(sub,body,EMAIL_HOST_USER,[user_mail],fail_silently=False)
+
+                except BadHeaderError:
+                    return JsonResponse({'response':'invalid header found'})
+
+                return JsonResponse({'validation':'success','msg':
+                    'successfully send mail to user for our store info','status':True})
+                
+            else:
+                return JsonResponse({'validation':'invalid credential','status':False})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
