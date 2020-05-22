@@ -4,7 +4,7 @@ from .models import Userprofile,Address
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from validator import *
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, login
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 import jwt
@@ -539,8 +539,3 @@ def send_email_message(request):
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
-
-
-

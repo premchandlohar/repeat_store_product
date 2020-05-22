@@ -21,7 +21,6 @@ urlpatterns = [
     path('login/', views.login),
     path('send_email/', views.send_email),
     path('send_mass_email/', views.send_mass_email),
-    path('send_email_message/', views.send_email_message),
 
 
     # path('accounts/login/', auth_views.LoginView.as_view()),
