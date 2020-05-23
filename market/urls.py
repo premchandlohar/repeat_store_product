@@ -30,5 +30,7 @@ urlpatterns = [
      path('get_stores_by_follower/', views.get_stores_by_follower),
      path('remove_follower_by_some_reason/', views.remove_follower_by_some_reason),
      path('get_all_followerships/', views.get_all_followerships),
+     path('send_mail_to_all_followers_for_specific_store/'
+          , views.send_mail_to_all_followers_for_specific_store),
     
 ]

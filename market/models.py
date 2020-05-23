@@ -129,7 +129,7 @@ class Subcategory(models.Model):
 
         # *********************************************************************************************
 class Product(models.Model):
-    store   = models.ForeignKey(Store, on_delete=models.CASCADE)
+    store   = models.ForeignKey(Store, on_delete=models.CASCADE,related_name='products')
     subcategory  = models.ForeignKey(Subcategory, on_delete=models.CASCADE)
     product_name  = models.CharField(max_length=30)
     product_quantity  = models.IntegerField()

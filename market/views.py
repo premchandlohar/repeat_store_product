@@ -565,9 +565,9 @@ def get_followers_by_store(request):
         store_obj = Store.objects.get(id = store_id)
         follower_obj = store_obj.follower.all()
         for users in follower_obj:
-            response.append({
+            response.append({"store_name":store_obj.store_name,
                 'user_id':users.user.id,
-                'firstname':users.user.firstname
+                'first_name':users.user.first_name
             })
         return JsonResponse({'validation':'success','response':response,'status':True})
     except Exception as e:
@@ -626,7 +626,42 @@ def get_all_followerships(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        
+
+def send_mail_to_all_followers_for_specific_store(request):
+    params = json.loads(request.body)  
+
+    store_id = params.get('store_id')
+    followers_data = []
+    print(followers_data)
+    recipient = []
+    print(recipient)    
+
+    try:
+        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
+                    
+        with transaction.atomic():
+                
+            store_obj = Store.objects.get(id=store_id)
+            product_obj = store_obj.products.get(id = 2)
+            followers_obj = store_obj.follower.all()
+            user_obj = Userprofile.objects.all()
+
+            for obj in followers_obj:
+                followers_data.append(user_obj.get(first_name = (obj.user.first_name)))
+
+            for obj in followers_data:
+                recipient.append(obj.email)
+                
+        subject = 'Latest Trending Product with discount available,in our Store'
+        details_of_product = {"Product_Name" : product_obj.product_name, 
+            "Product_Price" : product_obj.product_price,"product_discount_price":product_obj.product_discount_price }
+
+        send_mail(subject,str(details_of_product),EMAIL_HOST_USER,recipient,fail_silently=False)
+        return JsonResponse({'validation':'successfully send mail to followers of (store_obj.store_name)','status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 # try:
 #         subject = 'Latest Trending Product in our Store'
 #         details_dict = {"Product Name" : data["product_name"], "Product Price" : data["product_price"], 
