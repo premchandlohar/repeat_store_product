@@ -13,7 +13,9 @@ from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessag
 # from repeat import settings
 from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
+from django.contrib.auth.models import Permission
 
+from django.contrib.contenttypes.models import ContentType
 
 
 # Create your views here.
@@ -50,10 +52,14 @@ def create_user(request):
         
         with transaction.atomic():
             user_obj =get_user_model().objects.create(
-                username = username
+                username = username,
+                # is_staff = True
             )
             user_obj.set_password(password)
             user_obj.save()
+
+            # permission = Permission.objects.get(name='Can view poll')
+            # user_obj.user_permissions.add(permission)
 
             user_profile_obj = Userprofile.objects.create(
                 user = user_obj,
@@ -359,6 +365,15 @@ def user_login(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+def login(request):
+    m = get_user_model().objects.get(id=request.POST['id'])
+    if m.username == request.POST['username']:
+        request.session['user_id'] = m.id
+        return JsonResponse({'response':'You\'re logged in.'})
+    else:
+        return JsonResponse({'response':"Your username and id didn't match."})
+    #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 def change_user_password(request):
     params = request.POST
 
@@ -439,15 +454,6 @@ def forgot_user_password(request):
         return JsonResponse({'response':str(e),'status':False})
             #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def login(request):
-    m = get_user_model().objects.get(username=request.POST['username'])
-    if m.password == request.POST['password']:
-        request.session['user_id'] = m.id
-        return JsonResponse({'response':'You\'re logged in.'})
-    else:
-        return JsonResponse({'response':"Your username and password didn't match."})
-    #  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 def send_email(request):#in this multiple receiver and single sender whose send same msg(only one) for all receiver
     params = json.loads(request.body)
     sub = params.get('sub')
@@ -510,7 +516,7 @@ def send_mass_email(request):
     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
  # Not all features of the EmailMessage class are available through the send_mail() and related wrapper functions.
- # If you wish to use advanced features, such as BCC’ed recipients, file attachments, or multi-part email, you’ll need to create EmailMessage instances directly.
+# If you wish to use advanced features, such as BCC’ed recipients, file attachments, or multi-part email, you’ll need to create EmailMessage instances directly.
 def send_email_message(request):
     params = json.loads(request.body)
     sub = params.get('sub')
@@ -538,3 +544,92 @@ def send_email_message(request):
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+    # def assign_permissions_to_users(request):
+    #     # username = request.POST['username']
+    #     # password = request.POST['password']
+    #     user_id = request.POST['user_id']
+        
+    #     try:
+    #         user=get_user_model().objects.get(id = 6)   
+
+    #         return JsonResponse({'validation':'success','msg':'successfully assign permissions','status':True}) 
+    #         # else:
+    #         #     return JsonResponse({'validation':'unsuccess','msg':'user not exist','status':False}) 
+    #     except Exception as e:
+    #         return JsonResponse({'response':str(e),'status':False})
+            # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def get_all_permissions_names(request):
+    r=[]
+    a=Permission.objects.all()
+    for b in a:
+        r.append(b.name)
+    return JsonResponse({'status':r})
+    # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def assign_selected_permission_to_user(request): 
+    # content_type = ContentType.objects.get_for_model(Userprofile)
+    # permission = Permission.objects.get(content_type=content_type, codename="Can view userprofile")
+    user_id = request.POST['user_id']  
+    permission_id = request.POST['permission_id']
+
+    try:
+        user=get_user_model().objects.get(id = user_id)  
+
+        if user is not None: 
+            permissions = Permission.objects.get(id=permission_id)
+            # for permission in permissions:
+            user.user_permissions.add(permissions)
+            user.save()
+            print(user.has_perm("Can view userprofile"))
+            return JsonResponse({'validation':'success','msg':'successfully assign selected permissions to user','status':True}) 
+        else:
+            return JsonResponse({'validation':'unsuccess','msg':'user not exist','status':False}) 
+
+    except Exception as e:
+        return JsonResponse({'response':str(e),'status':False})
+     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def assign_all_permissions_to_users(request): 
+    # content_type = ContentType.objects.get_for_model(Userprofile)
+    # permission = Permission.objects.get(content_type=content_type, codename="Can view userprofile")
+    user_id = request.POST['user_id']   
+
+    try:
+        user=get_user_model().objects.get(id = user_id)  
+
+        if user is not None: 
+            permissions = Permission.objects.all()
+            for permission in permissions:
+                user.user_permissions.add(permission)
+            user.save()
+            print(user.has_perm("Can view userprofile"))
+            return JsonResponse({'validation':'success','msg':'successfully assign all permissions to user','status':True}) 
+        else:
+            return JsonResponse({'validation':'unsuccess','msg':'user not exist','status':False}) 
+
+    except Exception as e:
+        return JsonResponse({'response':str(e),'status':False})
+     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def remove_permissions_to_users(request): 
+    # content_type = ContentType.objects.get_for_model(Userprofile)
+    # permission = Permission.objects.get(content_type=content_type, codename="Can view userprofile")
+    user_id = request.POST['user_id']   
+
+    try:
+        user=get_user_model().objects.get(id = user_id)  
+
+        if user is not None: 
+            permissions = Permission.objects.all()
+            for permission in permissions:
+                user.user_permissions.remove(permission)
+            user.save()
+            return JsonResponse({'validation':'success','msg':'successfully remove all permissions to user','status':True}) 
+        else:
+            return JsonResponse({'validation':'unsuccess','msg':'user not exist','status':False}) 
+
+    except Exception as e:
+        return JsonResponse({'response':str(e),'status':False})
+     # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

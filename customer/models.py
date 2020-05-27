@@ -17,6 +17,9 @@ class Userprofile(models.Model):
 
     def __str__(self):
         return self.first_name + " " + self.last_name
+    
+    # class Meta:
+    #     permission = [('view_userprofile',can view userprofile')]
 
     # def get_json(self):
     #     return {
@@ -56,6 +59,8 @@ class Address(models.Model):
     class Meta:
         verbose_name = "Address"
         verbose_name_plural = "Addresses"
+
+    # 
 
     # def get_json(self):
     #     return {
