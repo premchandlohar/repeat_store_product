@@ -14,17 +14,20 @@ from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessag
 from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
 from django.contrib.auth.models import Permission
+# from django.contrib.contenttypes.models import ContentType
+# from django.views.generic import ListView,DetailView,UpdateView,DeleteView,CreateView
 
-from django.contrib.contenttypes.models import ContentType
+
+
 
 
 # Create your views here.
 def verify_token(request):
-    token = request.headers['token']
+    token = request.headers['token']#get token request for verifying user
     if not token: 
         return False       
     try:         
-        data = jwt.decode(token, "SECRET_KEY", algorithm='HS256')
+        data = jwt.decode(token, "SECRET_KEY", algorithm='HS256')#decode data
         return True
     except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:        
         return False
@@ -338,7 +341,7 @@ def get_addresses_by_user_id(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# @login_required(login_url='/accounts/login/')
+# authenticate user
 def user_login(request):
     username = request.POST['username']
     password = request.POST['password']
@@ -346,18 +349,17 @@ def user_login(request):
         if valid_string(username):return JsonResponse({'validation':'enter valid username ,must be a string'})   
         elif valid_string(password):return JsonResponse({'validation':'enter valid password,must be a string'})         
                 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=username, password=password)#authenticate by username & password
         if user is not None:
             auth_login(request, user)
             
             payload = {'user_id':2,'exp':datetime.utcnow() + timedelta(seconds = 864000)}   
             # print(payload)
-
             # payload = {}    
             # payload["user_id"] = 2
             # payload["exp"] = datetime.utcnow() + timedelta(seconds = 864000)      
-            token = jwt.encode(payload, "SECRET_KEY",algorithm='HS256').decode("utf-8")
-            return JsonResponse({'validation':'success','status':True,'token': token})
+            token = jwt.encode(payload, "SECRET_KEY",algorithm='HS256').decode("utf-8")#generate token
+            return JsonResponse({'validation':'success','status':True,'token': token})#send response
         else:
             return JsonResponse({'validation':str(e),'status':False})
 
@@ -458,27 +460,22 @@ def send_email(request):#in this multiple receiver and single sender whose send 
     params = json.loads(request.body)
     sub = params.get('sub')
     body = params.get('body')
-    # sender = params.get('sender')
     receiver1 = params.get('receiver1')
     receiver2 = params.get('receiver2')
-
-    # if valid_email(sender):return JsonResponse({'validation':'enter valid email,must be a string'})   
+  
     if valid_string(sub):return JsonResponse({'validation':'enter valid sub,must be a string'})   
     elif valid_string(body):return JsonResponse({'validation':'enter valid body,must be a string'})   
     elif valid_email(receiver1):return JsonResponse({'validation':'enter valid email,must be a string'})   
     elif valid_email(receiver2):return JsonResponse({'validation':'enter valid email,must be a string'})   
 
-    receiver = [receiver1,receiver2]
+    receiver = [receiver1,receiver2]#lstt of receiver
     if sub and body and receiver:
         try:
-            send_mail(sub,body,EMAIL_HOST_USER,receiver,fail_silently=False)
-            # print(obj)
-            # if (obj==1):
-            #     return JsonResponse({'response':'successfully send email','status':True})
+            send_mail(sub,body,EMAIL_HOST_USER,receiver,fail_silently=False)#send mail some credential
 
         except BadHeaderError:
             return JsonResponse({'response':'invalid header found'})
-        return JsonResponse({'response':'successfully send email','status':True})
+        return JsonResponse({'response':'successfully send email','status':True})#send json response
     else:
         return JsonResponse({'response':'make sure all fields are entered and valid'})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -633,3 +630,4 @@ def remove_permissions_to_users(request):
     except Exception as e:
         return JsonResponse({'response':str(e),'status':False})
      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+

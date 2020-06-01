@@ -15,3 +15,5 @@ def valid_email(email):
 def valid_image (image): return (True if not (str(image).endswith(('.jpeg','.jpg','.png','.webp')))else False)
 
 def valid_mobile_number(mobile_no):return(True if type(mobile_no)!=str or mobile_no=='' or mobile_no==None or len(mobile_no)!=10 else False)
+
+def valid_ifsc_code(ifsc_code):return(True if type(ifsc_code)!=str or ifsc_code=='' or ifsc_code==None or len(ifsc_code)!=11 else False)
