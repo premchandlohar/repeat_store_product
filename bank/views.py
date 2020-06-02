@@ -5,6 +5,8 @@ from validator import *
 from django.db import transaction
 
 
+
+
 # Create your views here.
 def establish_new_bank(request):
     params = json.loads(request.body)
@@ -71,17 +73,18 @@ def update_bank_details(request):
         elif valid_string(district):return JsonResponse({'validation':'enter valid district,must be a string'})   
         
         with transaction.atomic():
-            bank_obj = Bankprofile.objects.create(
-                state = state,
-                bank_name = bank_name,
-                ifsc_code = ifsc_code,
-                branch = branch,
-                address = address,
-                contact = contact,
-                city = city,
-                district = district
-            )
+            bank_obj = Bankprofile.objects.get(id = bank_id)
+            bank_obj.state = state
+            bank_obj.bank_name = bank_name
+            bank_obj.ifsc_code = ifsc_code
+            bank_obj.branch = branch
+            bank_obj.address = address
+            bank_obj.contact = contact
+            bank_obj.city = city
+            bank_obj.district = district
+            bank_obj.save()
             return JsonResponse({'validation':'success','status':True})
+            
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -155,5 +158,7 @@ def terminate_bank(request):
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+import requests
 
-
+r=requests.get('https://ifsc.razorpay.com/SBIN0007570')
+print(r.json())
