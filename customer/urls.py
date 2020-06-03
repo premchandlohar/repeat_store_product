@@ -25,6 +25,13 @@ urlpatterns = [
     path('assign_selected_permission_to_user/', views.assign_selected_permission_to_user),
     path('assign_all_permissions_to_users/', views.assign_all_permissions_to_users),
     path('remove_permissions_to_users/', views.remove_permissions_to_users),
+    path('aggregate_function/', views.aggregate_function),
+    path('annotate_function/', views.annotate_function),
+
+
+
+
+
     # path('user_listview/', views.user_listview.as_view()),
 
 

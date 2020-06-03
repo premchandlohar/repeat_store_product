@@ -158,7 +158,5 @@ def terminate_bank(request):
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-import requests
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-r=requests.get('https://ifsc.razorpay.com/SBIN0007570')
-print(r.json())

@@ -16,12 +16,14 @@ from repeat.settings import EMAIL_HOST_USER
 from django.contrib.auth.models import Permission
 # from django.contrib.contenttypes.models import ContentType
 # from django.views.generic import ListView,DetailView,UpdateView,DeleteView,CreateView
+from django.db.models import Avg,Max,Q,Count,Sum,Min,FloatField
+from django.db.models.functions import Lower,Upper
 
 
 
 
 
-# Create your views here.
+# # Create your views here.
 def verify_token(request):
     token = request.headers['token']#get token request for verifying user
     if not token: 
@@ -631,3 +633,47 @@ def remove_permissions_to_users(request):
         return JsonResponse({'response':str(e),'status':False})
      # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def aggregate_function(request):
+    max = Userprofile.objects.aggregate(Max('age'))
+    min = Userprofile.objects.aggregate(Min('age'))
+    avg = Userprofile.objects.aggregate(Avg('age'))
+    sum = Userprofile.objects.aggregate(Sum('age'))
+    diff = Userprofile.objects.aggregate(age_diff=Max('age', output_field=FloatField()) - Avg('age'))
+    
+    return JsonResponse({'max age ':max,'min age ':min,'avg age ':avg,'sum age ':sum,'diff age ':diff})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+def annotate_function(request):
+    response = []
+    address = [] 
+    max = []
+    users = []
+    names = []
+
+    count_user_add = Userprofile.objects.annotate(address=Count('addresses'))
+    for add in count_user_add:
+        response.append(add.address)
+    
+    user = Count('addresses', filter=Q(addresses__gte=1))
+
+    a = Userprofile.objects.annotate(add=user)
+    for add in a:
+        address.append(add.add)
+
+    max_obj = Userprofile.objects.annotate(max_age=Max('age'))
+    for age in max_obj:
+        max.append(age.max_age)
+    
+    user_age =  Userprofile.objects.filter(Q(age__gt=20) & Q(first_name__startswith='s'))
+    for user in user_age:
+        users.append(user.first_name)
+    
+    value_obj = Userprofile.objects.values('last_name',upper_name=Upper('first_name'))
+    for name in value_obj:
+        names.append(name)
+    
+        
+    return JsonResponse({'user_add':response,'add':address,'max age':max,'user':users,'name in upper':names})
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
