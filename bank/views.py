@@ -6,7 +6,6 @@ from django.db import transaction
 
 
 
-
 # Create your views here.
 def establish_new_bank(request):
     params = json.loads(request.body)
