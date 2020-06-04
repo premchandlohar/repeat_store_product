@@ -636,29 +636,29 @@ def remove_permissions_to_users(request):
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def aggregate_function(request):
-    max = Userprofile.objects.aggregate(Max('age'))
-    min = Userprofile.objects.aggregate(Min('age'))
-    avg = Userprofile.objects.aggregate(Avg('age'))
-    sum = Userprofile.objects.aggregate(Sum('age'))
+    max = Userprofile.objects.aggregate(Max('age'))#get a maximum age of users
+    min = Userprofile.objects.aggregate(Min('age'))#get a munimum age of users
+    avg = Userprofile.objects.aggregate(Avg('age'))#get average age of users
+    sum = Userprofile.objects.aggregate(Sum('age'))#get a summation of age of users
     diff = Userprofile.objects.aggregate(age_diff=Max('age', output_field=FloatField()) - Avg('age'))
-    
+    #get diff between maximum age and average age
     return JsonResponse({'max age ':max,'min age ':min,'avg age ':avg,'sum age ':sum,'diff age ':diff})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-def annotate_function(request):
+def annotate_function(request):#define fun in which queryset are generate in annotate
     response = []
     address = [] 
     max = []
     users = []
     names = []
 
-    count_user_add = Userprofile.objects.annotate(address=Count('addresses'))
+    count_user_add = Userprofile.objects.annotate(address=Count('addresses'))#count  address the no. of address for each user 
     for add in count_user_add:
         response.append(add.address)
     
     user = Count('addresses', filter=Q(addresses__gte=1))
 
-    a = Userprofile.objects.annotate(add=user)
+    a = Userprofile.objects.annotate(add=user)#count  address the no. of address for each user 
     for add in a:
         address.append(add.add)
 
@@ -666,11 +666,11 @@ def annotate_function(request):
     for age in max_obj:
         max.append(age.max_age)
     
-    user_age =  Userprofile.objects.filter(Q(age__gt=20) & Q(first_name__startswith='s'))
+    user_age =  Userprofile.objects.filter(Q(age__gt=20) & Q(first_name__startswith='s'))#use Q for anding and oring purposes
     for user in user_age:
         users.append(user.first_name)
     
-    value_obj = Userprofile.objects.values('last_name',upper_name=Upper('first_name'))
+    value_obj = Userprofile.objects.values('last_name',upper_name=Upper('first_name'))#get values in dict, not a objects
     for name in value_obj:
         names.append(name)
     

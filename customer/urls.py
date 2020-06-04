@@ -33,8 +33,6 @@ urlpatterns = [
 
 
     # path('user_listview/', views.user_listview.as_view()),
-
-
     # path('accounts/login/', auth_views.LoginView.as_view()),
 
 ]
