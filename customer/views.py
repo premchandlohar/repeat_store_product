@@ -677,3 +677,71 @@ def annotate_function(request):#define fun in which queryset are generate in ann
         
     return JsonResponse({'user_add':response,'add':address,'max age':max,'user':users,'name in upper':names})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# def username(request):
+#     data = []
+#     params = json.loads(request.body)
+#     username = params.get(username)
+
+#     obj = Userprofile.objects.get(user=username)
+#     data.append({'name':obj.first_name})
+#     return JsonResponse({'user':data})
+
+
+   
+        # queryset = UserProfile.objects.all()
+        # # print(not_login_users)
+        # for obj in queryset:
+        #     response.append({
+        #         'username':obj.user.username
+        #     })
+        # print(response)
+        # for o in data:
+        #     a=UserProfile.objects.filter(username=data[o])
+        # print(a)
+
+
+        # for users in not_login_users:
+        #     b=UserProfile.objects.filter(id=(users.id))
+        #     # print(b)
+        # #     data.append(b)
+
+        # for obj in data:
+        #     response.append(obj==UserProfile.objects.get(user)
+
+        # print(data)
+
+        # for obj in data:
+        #     response.append({
+        #         'obj':obj.UserProfile.id
+        #         # obj.profession
+        #     })
+
+
+           
+        #   for obj in followers_obj:
+        #         followers_data.append(user_obj.get(first_name = (obj.user.first_name)))
+
+        #     for obj in followers_data:
+        #         recipient.append(obj.email)
+
+            # User.objects.filter(last_login__range=(today_date, previous_date))   
+            # timezone.now().date()).count()
+
+            # user = authenticate(request, username=username, password=password)#authenticate by username & password
+                
+            # previous_date = today_date - datetime.timedelta(3*365/12)
+            # not_login_users = User.objects.filter(last_login__startswith=previous_date)
+
+# today = datetime.date.today()
+# last_week = today - datetime.timedelta(days=7)
+# User.objects.filter(last_login__range=(last_week, today))
+
+# day = datetime.date(2015, 3, 10)
+# print day
+# >>> 2015-03-10
+
+# print (day + datetime.timedelta(6*365/12))
+# >>> 2015-09-08
+
+
