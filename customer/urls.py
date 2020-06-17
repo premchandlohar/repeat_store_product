@@ -27,7 +27,7 @@ urlpatterns = [
     path('remove_permissions_to_users/', views.remove_permissions_to_users),
     path('aggregate_function/', views.aggregate_function),
     path('annotate_function/', views.annotate_function),
-    path('username/', views.username),
+    # path('username/', views.username),
 
 
 
