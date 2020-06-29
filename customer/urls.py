@@ -27,13 +27,13 @@ urlpatterns = [
     path('remove_permissions_to_users/', views.remove_permissions_to_users),
     path('aggregate_function/', views.aggregate_function),
     path('annotate_function/', views.annotate_function),
+    path('UserProfileListview/', views.UserProfileListview.as_view()),
     # path('username/', views.username),
 
 
 
 
 
-    # path('user_listview/', views.user_listview.as_view()),
     # path('accounts/login/', auth_views.LoginView.as_view()),
 
 ]

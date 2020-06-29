@@ -15,7 +15,7 @@ from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
 from django.contrib.auth.models import Permission
 # from django.contrib.contenttypes.models import ContentType
-# from django.views.generic import ListView,DetailView,UpdateView,DeleteView,CreateView
+from django.views.generic import ListView,DetailView,UpdateView,DeleteView,CreateView
 from django.db.models import Avg,Max,Q,Count,Sum,Min,FloatField
 from django.db.models.functions import Lower,Upper
 
@@ -757,5 +757,45 @@ def annotate_function(request):#define fun in which queryset are generate in ann
 
 # print (day + datetime.timedelta(6*365/12))
 # >>> 2015-09-08
+# ******************************************************************************************
+    #class based view
+# ********************************************************************************************
 
+class UserProfileListview(ListView):
+    model = Userprofile 
+    def get(self,request,*args,**kwargs): 
+        user = model.objects.get(id=1)
+        data = {
+            'first_name':user.first_name,
+            'age':user.age,
+            'email':user.email,
+            'last_name':user.last_name
+        }
+        return JsonResponse(data=data)
+    # -----------------------------------------------------------------------------------------------------
 
+# def get_addresses_by_user_id(request):
+#     try:
+#         response=[]
+
+#         obj = Address.objects.select_related('user_profile')
+#         for address in obj:
+#             response.append({
+#                 'user_id':address.user_profile.id,
+#                 'user_name':address.user_profile.first_name,                        
+#                 'username':address.user_profile.user.username,
+#                 'address_id':address.id,
+#                 'building_name':address.building_name,
+#                 'street_name':address.street_name,
+#                 'locality':address.locality,
+#                 'city':address.city,
+#                 'district':address.district,
+#                 'state':address.state,
+#                 'pincode':address.pincode,
+#                 'city':address.city,
+#             })
+           
+#         return JsonResponse({'validation':'success','response':response,'status':True})
+#     except Exception as e:
+#         return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++
