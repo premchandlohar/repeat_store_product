@@ -15,6 +15,7 @@ urlpatterns = [
     path('get_all_address/', views.get_all_address),
     path('delete_address/', views.delete_address),
     path('get_addresses_by_user_id/', views.get_addresses_by_user_id),
+    path('show_addresses_of_users/', views.show_addresses_of_users),
     path('user_login/', views.user_login),
     path('login/', views.login),
     path('change_user_password/', views.change_user_password),

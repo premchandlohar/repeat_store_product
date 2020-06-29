@@ -269,7 +269,9 @@ def get_address(request):
             'city':address_obj.city,
             'district':address_obj.district,
             'state':address_obj.state,
-            'pincode':address_obj.pincode
+            'pincode':address_obj.pincode,
+            'created_on':address_obj.created_on,
+            'updated_on':address_obj.updated_on
         })
 
         return JsonResponse({'validation':'success','response':response,'status':True})
@@ -343,6 +345,30 @@ def get_addresses_by_user_id(request):
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+def show_addresses_of_users(request):
+    try:
+        response=[]
+
+        qs = Userprofile.objects.select_related('user').prefetch_related('addresses')
+        for x in qs:
+            for obj in x.addresses.all():
+                response.append({ 
+                    'user_id':x.id,
+                    'user_name':x.first_name,
+                    'add_id':obj.id,
+                    'building_name':obj.building_name,
+                    'street_name':obj.street_name,
+                    'locality':obj.locality,
+                    'city':obj.city,
+                    'district':obj.district,
+                    'state':obj.state,
+                    'pincode':obj.pincode
+                })
+           
+        return JsonResponse({'validation':'success','response':response,'status':True})
+    except Exception as e:
+        return JsonResponse({'validation':str(e),'status':False})
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ ++++++++++++++++++++
 # authenticate user
 def user_login(request):
     try:
@@ -690,8 +716,20 @@ def annotate_function(request):#define fun in which queryset are generate in ann
     
         
     return JsonResponse({'user_add':response,'add':address,'max age':max,'user':users,'name in upper':names})
+  
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
+class UserProfileListview(ListView):
+    model = Userprofile 
+    def get(self,request,*args,**kwargs): 
+        user = model.objects.get(id=1)
+        data = {
+            'first_name':user.first_name,
+            'age':user.age,
+            'email':user.email,
+            'last_name':user.last_name
+        }
+        return JsonResponse(data=data)
+# -----------------------------------------------------------------------------------------------------
 # def username(request):
 #     data = []
 #     params = json.loads(request.body)
@@ -761,25 +799,13 @@ def annotate_function(request):#define fun in which queryset are generate in ann
     #class based view
 # ********************************************************************************************
 
-class UserProfileListview(ListView):
-    model = Userprofile 
-    def get(self,request,*args,**kwargs): 
-        user = model.objects.get(id=1)
-        data = {
-            'first_name':user.first_name,
-            'age':user.age,
-            'email':user.email,
-            'last_name':user.last_name
-        }
-        return JsonResponse(data=data)
-    # -----------------------------------------------------------------------------------------------------
 
 # def get_addresses_by_user_id(request):
 #     try:
 #         response=[]
 
-#         obj = Address.objects.select_related('user_profile')
-#         for address in obj:
+#         qs = Address.objects.select_related('user_profile')
+#         for address in qs:
 #             response.append({
 #                 'user_id':address.user_profile.id,
 #                 'user_name':address.user_profile.first_name,                        
@@ -798,4 +824,4 @@ class UserProfileListview(ListView):
 #         return JsonResponse({'validation':'success','response':response,'status':True})
 #     except Exception as e:
 #         return JsonResponse({'validation':str(e),'status':False})
-        # ++++++++++++
+#         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
