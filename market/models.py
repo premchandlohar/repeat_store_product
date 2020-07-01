@@ -15,6 +15,7 @@ class Store(models.Model):
     store_city = models.CharField(max_length=25)
     store_state = models.CharField(max_length=25)
     created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    updated_on = models.DateTimeField(auto_now=True,null=True,blank=True)
     store_image = models.ImageField(upload_to ='uploads/%Y/%m/%d/',null = True,blank= True)
     # follower = models.ManyToManyField(Userprofile, through = 'Followership',related_name='followers')
 
@@ -40,6 +41,7 @@ class Category(models.Model):
     category_name = models.CharField(max_length=30)
     category_image = models.ImageField(upload_to = 'uploads',null = True)
     created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    updated_on = models.DateTimeField(auto_now=True,null=True,blank=True)
 
 
     def __str__(self):
@@ -85,6 +87,7 @@ class Subcategory(models.Model):
     subcategory_name  = models.CharField(max_length=30)
     subcategory_image  = models.ImageField(upload_to = 'uploads',null = True) 
     created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    updated_on = models.DateTimeField(auto_now=True,null=True,blank=True)
 
 
     def __str__(self):
@@ -138,6 +141,7 @@ class Product(models.Model):
     product_description  = models.TextField(max_length=801)
     product_image  = models.ImageField(upload_to = 'uploads',null = True,blank= True)
     created_on = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    updated_on = models.DateTimeField(auto_now=True,null=True,blank=True)
   
     def __str__(self):
         return self.product_name

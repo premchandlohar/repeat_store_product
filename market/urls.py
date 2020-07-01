@@ -32,5 +32,6 @@ urlpatterns = [
      path('get_all_followerships/', views.get_all_followerships),
      path('send_mail_to_all_followers_for_specific_store/'
           , views.send_mail_to_all_followers_for_specific_store),
+      path('list_of_all_stores/', views.StoreListview.as_view()),
     
 ]

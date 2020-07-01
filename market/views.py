@@ -7,6 +7,8 @@ from validator import *
 from django.core.mail import send_mail,BadHeaderError
 from repeat.settings import EMAIL_HOST_USER
 from customer.models import Userprofile
+from django.core.serializers import serialize
+from django.views.generic import View
 # Create your views here.
 
 def create_store(request):
@@ -55,11 +57,9 @@ def create_store(request):
             )
 
             if sub and body and user_mails:
-                try:
-                    send_mail(sub,body,EMAIL_HOST_USER,user_mails,fail_silently=False)
+                try: send_mail(sub,body,EMAIL_HOST_USER,user_mails,fail_silently=False)
 
-                except BadHeaderError:
-                    return JsonResponse({'response':'invalid header found'})
+                except BadHeaderError: return JsonResponse({'response':'invalid header found'})
 
                 return JsonResponse({'validation':'success','msg':
                     'successfully send mail to user for our store info','status':True})
@@ -118,23 +118,26 @@ def get_store(request):
         response =[]
 
         store_id = params.get('store_id')
-        if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
+        if store_id:
+            if valid_integer(store_id): return JsonResponse({'validation':'enter valid store_id,must be int'})
 
-        store_obj = Store.objects.get(id=store_id)
-        response.append({
-            'store_id' :store_obj.id,
-            'store_name' :store_obj.store_name,
-            'store_address' :store_obj.store_address,
-            'store_location' :store_obj.store_location,
-            'store_latitude' :store_obj.store_latitude,
-            'store_longitude' :store_obj.store_longitude,
-            'store_city' :store_obj.store_city,
-            'store_state' :store_obj.store_state,
-            'store_image' :str(store_obj.store_image),
-            'created_on' :store_obj.created_on
-        })
+            store_obj = Store.objects.get(id=store_id)
+            response.append({
+                'store_id' :store_obj.id,
+                'store_name' :store_obj.store_name,
+                'store_address' :store_obj.store_address,
+                'store_location' :store_obj.store_location,
+                'store_latitude' :store_obj.store_latitude,
+                'store_longitude' :store_obj.store_longitude,
+                'store_city' :store_obj.store_city,
+                'store_state' :store_obj.store_state,
+                'store_image' :str(store_obj.store_image),
+                'created_on' :store_obj.created_on, 
+                'updated_on' :store_obj.updated_on
+            })
 
-        return JsonResponse({'validation':'success','responsse':response,'status':True})
+            return JsonResponse({'validation':'success','responsse':response,'status':True})
+        return JsonResponse({'validation':'unsuccess','responsse':'id does not exists','status':False})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++?
@@ -155,7 +158,8 @@ def get_all_store(request):
                 'store_city' :store.store_city,
                 'store_state' :store.store_state,
                 'store_image' :str(store.store_image),
-                'created_on' :store.created_on
+                'created_on' :store.created_on, 
+                'updated_on' :store.updated_on
             })
 
         return JsonResponse({'validation':'success','responsse':response,'status':True})
@@ -672,6 +676,40 @@ def send_mail_to_all_followers_for_specific_store(request):
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            #class based view
+class StoreListview(View):
+    def get(self,request,*args,**kwargs):
+        qs = Store.objects.all()
+        data = serialize('json',qs,fields=['id','store_name'])
+        d=json.loads(data)
+        return JsonResponse(data=d,safe=False)
+        # *****************************************************************************************
+
+# class CategoryListview(View):
+#     def get(self,request,*args,**kwargs):
+#         qs =  Category.objects.all()
+#         data = serialize('json',qs,fields=['id','category_name'])
+#         d=json.loads(data)
+#         return JsonResponse(data=d,safe=False)
+#         # *****************************************************************************************
+
+# class SubcategoryListview(View):
+#     def get(self,request,*args,**kwargs):
+#         qs =  Subcategory.objects.all()
+#         data = serialize('json',qs,fields=['id','subcategory_name'])
+#         d=json.loads(data)
+#         return JsonResponse(data=d,safe=False)
+#         # *****************************************************************************************
+
+# class ProductListview(View):
+#     def get(self,request,*args,**kwargs):
+#         qs = Product.objects.all()
+#         data = serialize('json',qs,fields=['id','product_name'])
+#         d=json.loads(data)
+#         return JsonResponse(data=d,safe=False)
+        # *****************************************************************************************
+
+
 
 # try:
 #         subject = 'Latest Trending Product in our Store'

@@ -26,13 +26,11 @@ def verify_token(request):
     try:         
         token = request.headers['token']#get token request for verifying user
         print(token)
-        if not token: 
-            return False       
+        if not token: return False       
         else:
             data = jwt.decode(token, "SECRET_KEY", algorithm='HS256')#decode data
             return True
-    except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError:        
-        return False
+    except jwt.ExpiredSignature or jwt.DecodeError or jwt.InvalidTokenError: return False
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
    
 def create_user(request):
