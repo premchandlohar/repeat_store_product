@@ -675,7 +675,8 @@ def send_mail_to_all_followers_for_specific_store(request):
         return JsonResponse({'validation':'successfully send mail to followers of (store_obj.store_name)','status':True})
     except Exception as e:
         return JsonResponse({'validation':str(e),'status':False})
-        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            
             #class based view
 class StoreListview(View):
     def get(self,request,*args,**kwargs):
