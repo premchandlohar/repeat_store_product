@@ -147,8 +147,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 #for sending email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST= 'smtp.gmail.com'
-EMAIL_HOST_USER= 'loharpremchand11@gmail.com'
-EMAIL_HOST_PASSWORD= 'loharprem11'
+EMAIL_HOST_USER= 'Pythondjango19@gmail.com'
+EMAIL_HOST_PASSWORD= 'Python@19'
 EMAIL_USE_TLS= True
 EMAIL_USE_SSL= False
 EMAIL_PORT= 587
