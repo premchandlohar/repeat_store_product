@@ -22,6 +22,8 @@ urlpatterns = [
     path('forgot_user_password/', views.forgot_user_password),
     path('send_email/', views.send_email),
     path('send_mass_email/', views.send_mass_email),
+    path('send_email_message/', views.send_email_message),
+    path('sending_template_data_by_mail/', views.sending_template_data_by_mail),
     path('get_all_permissions_names/', views.get_all_permissions_names),
     path('assign_selected_permission_to_user/', views.assign_selected_permission_to_user),
     path('assign_all_permissions_to_users/', views.assign_all_permissions_to_users),

@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.http import JsonResponse
 import json
 from .models import Userprofile,Address
@@ -5,11 +6,11 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from validator import *
 from django.contrib.auth import authenticate, login as auth_login
-# Create your views here.
 from django.contrib.auth.decorators import login_required
 import jwt
+import random
 from datetime import timedelta,datetime 
-from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessage
+from django.core.mail import send_mail,BadHeaderError,send_mass_mail,EmailMessage,EmailMultiAlternatives
 # from repeat import settings
 from django.conf import settings
 from repeat.settings import EMAIL_HOST_USER
@@ -18,6 +19,9 @@ from django.contrib.auth.models import Permission
 from django.views.generic import ListView,DetailView,UpdateView,DeleteView,CreateView
 from django.db.models import Avg,Max,Q,Count,Sum,Min,FloatField
 from django.db.models.functions import Lower,Upper
+
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 
 
@@ -571,8 +575,8 @@ def send_email_message(request):
             try:
                 mail_obj = EmailMessage(sub,body,EMAIL_HOST_USER,[receiver],[bcc_receiver],
                     headers={'Message-ID': 'foo'},cc=[cc_receiver],reply_to=[bcc_receiver])
-                fd = open('manage.py', 'r')
-                mail_obj.attach('manage.py', fd.read(), 'text/plain')
+                fd = open('C:/Users/PRENCHAND/Desktop/treatos.txt','r')
+                mail_obj.attach('C:/Users/PRENCHAND/Desktop/treatos.txt', fd.read(),'text/plain')
                 mail_obj.send()
             except BadHeaderError:
                     return JsonResponse({'response':'invalid header found'})
@@ -584,6 +588,27 @@ def send_email_message(request):
         return JsonResponse({'response':str(e),'status':False})
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+def sending_template_data_by_mail(request):#in this multiple receiver and single sender whose send same msg(only one) for all receiver
+    if request.method == "POST":
+        to = request.POST.get('toemail')
+        otp = random.randint(111111,999999)
+
+        html_content = render_to_string('index.html',{'otp':otp})
+        text_content = strip_tags(html_content)
+        email = EmailMultiAlternatives(
+            'testing',
+            text_content,
+            EMAIL_HOST_USER,
+            [to] 
+        )
+        email.attach_alternative(html_content,"text/html")
+        email.send()
+        return render(
+            request,
+            'index.html',
+            {"otp":otp})
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
     # def assign_permissions_to_users(request):
     #     # username = request.POST['username']
     #     # password = request.POST['password']
